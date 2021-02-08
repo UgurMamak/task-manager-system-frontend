@@ -8,11 +8,10 @@ class Register extends Component {
     }
 
 
-
     render() {
 
         const form=[];
-        form.push(<div>
+        form.push(<div key="1">
             <div className="form-group">
                 <label htmlFor="email">Email</label>
                 <input type="email" className="form-control required email"
@@ -34,10 +33,11 @@ class Register extends Component {
             </div>
             <div className="form-group">
                 <label htmlFor="password_confirm">Password Confirm</label>
-                <input type="password" className="form-control required"
+                <input type="password" className="form-control required passwordmatch"
                        data-msg-required="Boş bırakmayınız."
-                       name="password_confirm"
-                       id="password_confirm"
+                       data-msg-passwordmatch={"parola eşleşmedi"}
+                       name="password-confirm"
+                       id="password-confirm"
                        onChange={this.handleChange}
                 />
             </div>
@@ -54,7 +54,6 @@ class Register extends Component {
             </div>
             <button type="submit" className="btn btn-primary">Giriş Yap</button>
         </div>);
-
 
         return (
                 <Auth children={form} calistir={this.calistir}>

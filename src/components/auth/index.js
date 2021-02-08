@@ -22,16 +22,7 @@ class Index extends Component {
     componentDidMount() {
         this.validator = $(this.form).validate({
             errorElement: 'div',
-            rules: {
-                password_confirm: {
-                    equalTo: "#password"
-                }
-            },
-            messages: {
-                password_confirm: {
-                    equalTo: "Şifreler eşleşmedi"
-                }
-            },
+
             highlight: (element) => {
                 $(element).parents('.form-group').addClass('has-error');
             },

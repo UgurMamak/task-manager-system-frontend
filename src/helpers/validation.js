@@ -20,6 +20,10 @@ $.validator.addClassRules({
     //class ismi
     message: {
         cminlength: 10
+    },
+
+    passwordMatch:{
+        passwordmatch:true
     }
 
 });
@@ -28,3 +32,20 @@ $.validator.addClassRules({
 $.validator.addMethod("emailaddress", function (value, element) {
     return this.optional(element) || /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(value);
 }, "Invalid e-mail address222");
+
+
+
+$.validator.addMethod( 'passwordmatch', function(value, element) {
+
+    // The two password inputs
+    var password = $("#password").val();
+    var confirmPassword = $("#password-confirm").val();
+
+    // Check for equality with the password inputs
+    if (password != confirmPassword ) {
+        return false;
+    } else {
+        return true;
+    }
+
+}, "Your Passwords Must Match");

@@ -1,0 +1,37 @@
+.primary-checkbox{
+padding-left: 0;
+  [type="checkbox"]{
+    display: none;
+    &:checked{
+      + .form-check-label{
+        &:before{
+          font-family: icons;
+          content: '\e913';
+          font-size: 13px;
+        }
+      }
+    }
+  }
+  .form-check-label{
+    position: relative;
+    padding-left: 20px;
+    color:#fff;
+    &:before{
+      content: '';
+      position: absolute;
+      left:0;
+      top:50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 5px;
+      color:#000;
+      background-color: #ffffff;
+    }
+  }
+
+
+}

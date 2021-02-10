@@ -1,0 +1,20 @@
+.primary-btn {
+  border-radius: 45px;
+  border: none;
+  background: #ffffff;
+  font-weight: bold;
+  transition: ease all .4s;
+  padding:10px 20px;
+
+  &:hover {
+    transition: ease all .4s;
+    background: -webkit-linear-gradient(bottom, #7579ff, #b224ef);
+    color:#ffffff;
+
+  }
+
+  &:focus,
+  &:active {
+    box-shadow: none;
+  }
+}

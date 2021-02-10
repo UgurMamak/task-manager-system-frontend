@@ -2,30 +2,12 @@ import React, {Component} from 'react';
 import $ from 'jquery'
 
 class Index extends Component {
-
-    state = {
-        email: "",
-        password: "",
-        checkbox1: false,
-        dizi: []
-    }
-
-    handleChange = (e) => {
-        e.preventDefault();
-        const {name} = e.target;
-        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
-        this.setState({
-            [name]: value
-        });
-    }
-
     componentDidMount() {
         this.validator = $(this.form).validate({
             errorElement: 'div',
-
             highlight: (element) => {
                 $(element).parents('.form-group').addClass('has-error');
-            },
+                },
             unhighlight: (element) => {
                 $(element).parents('.form-group').removeClass('has-error');
             },
@@ -34,27 +16,26 @@ class Index extends Component {
             },
             submitHandler: (form) => {
                 let formData = new FormData();
-
                 $(form).serializeArray().map((item) => {
                     formData.append(item.name, item.value);
-                    //axios process insert
-                    this.state.dizi.push({name: item.name, value: item.value});
+                   // this.state.dizi.push({name: item.name, value: item.value});
                 });
-                this.props.calistir(this.state.dizi);
+               // this.props.handleSubmit(this.state.dizi);
+                this.props.handleSubmit(formData);
             }
         });
     }
 
     render() {
 
-        const {children} = this.props;
+        const {children,className} = this.props;
 
         return (
-            <form ref={(el) => {
-                this.form = el
-            }}>
-                {children}
-            </form>
+                <form ref={(el) => {
+                    this.form = el
+                }} className={className}>
+                    {children}
+                </form>
         );
     }
 }

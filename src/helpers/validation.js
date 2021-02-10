@@ -8,9 +8,14 @@ $.validator.addClassRules({
         emailaddress: true
     },
 
-    //class'a yazılacak isim
-    passwordLength: {
-        password3: true //çalışan metodun ismi
+    passwordMatch:{
+        passwordmatch:true
+    },
+
+
+    passwordlength: {
+        minlength:6,
+        maxlength:10,
     },
 
     phoneNumber: {},
@@ -21,10 +26,6 @@ $.validator.addClassRules({
     message: {
         cminlength: 10
     },
-
-    passwordMatch:{
-        passwordmatch:true
-    }
 
 });
 
@@ -49,3 +50,6 @@ $.validator.addMethod( 'passwordmatch', function(value, element) {
     }
 
 }, "Your Passwords Must Match");
+
+/*
+$.validator.addMethod("passwordlength",function (value,element){},"Parola uzunluğu en az");*/

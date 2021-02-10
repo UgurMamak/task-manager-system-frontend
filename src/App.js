@@ -1,27 +1,38 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './styles/styles.scss'
 import "./helpers/validation";
+import './styles/styles.scss'
 
-import {BrowserRouter as Router, Route, Link, NavLink, Redirect, Switch} from 'react-router-dom';
+
+import {
+    BrowserRouter,
+    Route,
+    Switch,
+    Redirect,
+} from "react-router-dom";
 
 //containers
+import Header from "./containers/header"
+import Footer from "./containers/footer"
 import Home from "./containers/home";
 import Login from "./containers/login";
 import Register from "./containers/register";
+
 
 
 class App extends Component {
     render() {
         return (
             <>
-                <Router>
+                <Header/>
+                <BrowserRouter>
                     <Switch>
                         <Route exact path="/" component={Home}/>
                         <Route path="/login" component={Login}/>
                         <Route path="/register" component={Register}/>
                     </Switch>
-                </Router>
+                </BrowserRouter>
+                <Footer/>
             </>
         );
     }

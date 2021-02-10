@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
 import Auth from "../components/auth/index"
+
 class Register extends Component {
 
-    calistir=(formData)=>{
+    calistir = (formData) => {
         console.log("çalıştır");
         console.log(formData);
     }
 
-
     render() {
 
-        const form=[];
+        const form = [];
         form.push(<div key="1">
             <div className="form-group">
                 <label htmlFor="email">Email</label>
@@ -56,8 +56,8 @@ class Register extends Component {
         </div>);
 
         return (
-                <Auth children={form} calistir={this.calistir}>
-                </Auth>
+            <Auth children={form} calistir={this.calistir}>
+            </Auth>
         );
     }
 }

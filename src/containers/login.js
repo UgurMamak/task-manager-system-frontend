@@ -34,7 +34,6 @@ class Login extends Component {
     handleSubmit = async (data) => {
         //  this.props.userLoginPending(); //redux promise middlaware olmasaydı bunu kullanmamız gerekirdi.
         this.props.userLogin(data);
-
     }
 
     render() {

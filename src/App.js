@@ -17,6 +17,7 @@ import Footer from "./containers/footer"
 import Home from "./containers/home";
 import Login from "./containers/login";
 import Register from "./containers/register";
+import NotFound from "./containers/not-found"
 
 
 
@@ -30,6 +31,7 @@ class App extends Component {
                         <Route exact path="/" component={Home}/>
                         <Route path="/login" component={Login}/>
                         <Route path="/register" component={Register}/>
+                        <Route component={NotFound} />
                     </Switch>
                 </BrowserRouter>
                 <Footer/>

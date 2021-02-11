@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Auth from "../components/auth/index"
 import {connect} from "react-redux";
 import {userLogin} from "../redux/auth/actions";
+import {Link} from "react-router-dom";
 import {Loading} from "../hoc/loading"
 import loginReducer from "../redux/auth/loginReducer";
 
@@ -40,6 +41,10 @@ class Login extends Component {
         //console.log(this.props.loginReducer)
         const form = [];
         form.push(<React.Fragment key={"1"}>
+                <div className="form-header">
+                    <h1 className="form-title">Giriş Yap</h1>
+                </div>
+
                 <div className="form-group">
                     <div className="form-control-wrap">
                         <input type="email"
@@ -81,10 +86,10 @@ class Login extends Component {
                     />
                     <label className="form-check-label" htmlFor="checkbox1">Beni Hatırla</label>
                 </div>
-                <div className="form-footer">
+                <div className="form-footer text-center">
                     <button type="submit" className="btn primary-btn d-block m-auto">Giriş Yap</button>
                     <span>Şifremi Unuttum</span>
-                    <span>Üye Ol</span>
+                    <Link className="footer-link" to="/">Üye Ol</Link>
                 </div>
             </React.Fragment>
         );

@@ -8,6 +8,17 @@
 }
 
 .primary-form {
+
+  .form-header {
+    margin-bottom: 30px;
+
+    .form-title {
+      color: #fff;
+      font-size: 30px;
+      text-align: center;
+    }
+  }
+
   .form-group {
     position: relative;
     margin-bottom: 50px;
@@ -126,7 +137,11 @@
   }
 
   .form-footer {
-  }
+    color:#fff;
+    .footer-link{
+      color:#ffffff;
+    }
 
+  }
 }
 

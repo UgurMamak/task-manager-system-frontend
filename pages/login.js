@@ -1,9 +1,13 @@
 import React, {Component} from 'react';
 import Auth from "../components/auth/index";
 import Link from "next/link";
+import {connect} from "react-redux";
+import {userLogin} from "../redux/auth/actions";
+import Head from "next/head";
 //helpers
 //import "../helpers/validation";
 
+import {example} from "../helpers/validation";
 
 class Login extends Component {
 
@@ -38,51 +42,10 @@ class Login extends Component {
 
     componentDidMount() {
 
-        $.validator.addClassRules({
-            //email class ismi email class'ına sahip olanlar emailAdress metodunu çalıştırır.
-            email: {
-                emailaddress: true
-            },
-
-            passwordMatch: {
-                passwordmatch: true
-            },
+        example();
 
 
-            passwordlength: {
-                minlength: 6,
-                maxlength: 10,
-            },
 
-            phoneNumber: {},
-
-            checkControl: {},
-
-            //class ismi
-            message: {
-                cminlength: 10
-            },
-
-        });
-
-        $.validator.addMethod("emailaddress", function (value, element) {
-            return this.optional(element) || /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(value);
-        }, "Invalid e-mail address222");
-
-        $.validator.addMethod('passwordmatch', function (value, element) {
-
-            // The two password inputs
-            var password = $("#password").val();
-            var confirmPassword = $("#password-confirm").val();
-
-            // Check for equality with the password inputs
-            if (password != confirmPassword) {
-                return false;
-            } else {
-                return true;
-            }
-
-        }, "Your Passwords Must Match");
     }
 
 
@@ -144,30 +107,30 @@ class Login extends Component {
         );
 
         return (
+            <>
+                <Head>
+                    <title>Login</title>
+                </Head>
             <main style={{minHeight: "100vh"}} className="d-flex justify-content-center align-items-center">
                 <div className="primary-form-wrapper">
                     <Auth children={form} className="primary-form" handleSubmit={this.handleSubmit}/>
                 </div>
-                <div className="btn-group">
-                    <button type="button" className="btn btn-danger dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                        Action
-                    </button>
-                    <div className="dropdown-menu">
-                        <a className="dropdown-item" href="#">Action</a>
-                        <a className="dropdown-item" href="#">Another action</a>
-                        <a className="dropdown-item" href="#">Something else here</a>
-                        <div className="dropdown-divider"></div>
-                        <a className="dropdown-item" href="#">Separated link</a>
-                    </div>
-                </div>
-
-
             </main>
+            </>
 
         );
     }
 }
 
+const mapStateToProps = (state, props) => {
+    return {
+        loginReducer: state.loginReducer
+    }
+}
 
-export default Login;
+const mapDispatchToProps = {
+    userLogin,
+    //userLoginPending:actionCreators.userLoginPending //redux promise middlaware olmasaydı bunu kullanmamız gerekirdi.
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

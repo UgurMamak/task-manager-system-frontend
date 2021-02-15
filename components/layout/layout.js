@@ -1,12 +1,17 @@
 import React, {Component} from 'react';
+import Header from "./header";
+import Footer from "./footer";
 
-//header ve footer dışındaki alan
 class Layout extends Component {
     render() {
         return (
-            <div>
-                
-            </div>
+            <>
+                <Header/>
+                <main>
+                    {this.props.children}
+                </main>
+                <Footer/>
+            </>
         );
     }
 }

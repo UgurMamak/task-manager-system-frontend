@@ -41,11 +41,7 @@ class Login extends Component {
     }
 
     componentDidMount() {
-
         example();
-
-
-
     }
 
 

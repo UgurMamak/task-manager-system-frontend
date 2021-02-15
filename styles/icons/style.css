@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icons';
-  src:  url('fonts/icons.eot?tfdipe');
-  src:  url('fonts/icons.eot?tfdipe#iefix') format('embedded-opentype'),
-    url('fonts/icons.ttf?tfdipe') format('truetype'),
-    url('fonts/icons.woff?tfdipe') format('woff'),
-    url('fonts/icons.svg?tfdipe#icons') format('svg');
+  src:  url('fonts/icons.eot?9f7w0v');
+  src:  url('fonts/icons.eot?9f7w0v#iefix') format('embedded-opentype'),
+    url('fonts/icons.ttf?9f7w0v') format('truetype'),
+    url('fonts/icons.woff?9f7w0v') format('woff'),
+    url('fonts/icons.svg?9f7w0v#icons') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -258,4 +258,7 @@
 }
 .icon-eye-blocked:before {
   content: "\e9d1";
+}
+.icon-option:before {
+  content: "\e994";
 }

@@ -1,3 +1,4 @@
+/*
 import React, {Component} from 'react';
 
 class Tasks extends Component {
@@ -5,7 +6,7 @@ class Tasks extends Component {
         return (
             <div>
                 Tasks page (user task list)
-                {/*<div>
+                {/!*<div>
                     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" />
                     <div className="container">
                         <div className="row">
@@ -211,7 +212,89 @@ class Tasks extends Component {
                             </div>
                         </div>
                     </div>
-                </div>*/}
+                </div>*!/}
+            </div>
+        );
+    }
+}
+export default Tasks;*/
+import React, {Component} from 'react';
+import "suneditor/dist/css/suneditor.min.css";
+import SunEditor,{buttonList} from "suneditor-react";
+
+const editorSetOptions={
+    showPathLabel: false,
+    height:"auto",
+    placeholder: "Enter your text here!!!",
+    buttonList: [
+        ["undo", "redo"],
+        ["font", "fontSize", "formatBlock"],
+        ["paragraphStyle"],
+        [
+            "bold",
+            "underline",
+            "italic",
+            "strike",
+            "subscript",
+            "superscript"
+        ],
+        ["fontColor", "hiliteColor"],
+        ["removeFormat"],
+        "/", // Line break
+        ["outdent", "indent"],
+        ["align", "horizontalRule", "list", "lineHeight"],
+        ["table", "link", "image"]
+    ],
+    formats: ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6"],
+    font: [
+        "Arial",
+        "Calibri",
+        "Comic Sans",
+        "Courier",
+        "Garamond",
+        "Georgia",
+        "Impact",
+        "Lucida Console",
+        "Palatino Linotype",
+        "Segoe UI",
+        "Tahoma",
+        "Times New Roman",
+        "Trebuchet MS"
+    ]
+}
+
+
+class Tasks extends Component {
+
+    handleChange=(content)=>{
+        console.log(content);
+    }
+
+    handleImageUpload=(targetImgElement, index, state, imageInfo, remainingFilesCount)=>{
+        //console.log(targetImgElement, index, state, imageInfo, remainingFilesCount)
+        console.log("index",index);
+        console.log("state",state);
+        console.log("imageInfo",imageInfo);
+    console.log(index.src);
+
+
+        const att=document.createElement('img');
+        att.src=imageInfo.src;
+
+    }
+
+    render() {
+        return (
+            <div>
+
+                <SunEditor
+                    autoFocus={true}
+                    lang="en"
+                    setOptions={editorSetOptions}
+                    onChange={this.handleChange}
+                    onImageUpload={this.handleImageUpload}
+                />
+
             </div>
         );
     }

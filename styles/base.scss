@@ -1,58 +1,60 @@
-#root{
-  background-color:#f2f2f2;
+#root {
+  background-color: #f2f2f2;
   min-height: 100%;
 }
 
-body{
+body {
   min-height: 100vh;
   background-color: #f7f3f3;
 }
 
-.summary-card{
+.summary-card {
   display: block;
   padding: 10px;
   border-radius: 10px;
   box-shadow: 0 0 0.875rem 0 #c6cace;
   background-color: #fff;
-  color:#000;
+  color: #000;
 
-  &:hover{
-    text-decoration:none;
-    color:#000;
+  &:hover {
+    text-decoration: none;
+    color: #000;
     background-color: #f3e8e8;
   }
 
-  .header{}
+  .header {
+  }
 
-  .body{
+  .body {
     padding-bottom: 10px;
-    .content{
+
+    .content {
       word-break: break-all;
     }
   }
 
-  + .summary-card{
+  + .summary-card {
     margin-top: 15px;
   }
 }
 
-.task-detail-wrapper{
+.task-detail-wrapper {
 
 }
 
 
-
-
-body{
-  margin-top:20px;
+body {
+  margin-top: 20px;
   background: #90d2ff;
 }
+
 .card-box {
   padding: 20px;
   border-radius: 3px;
   margin-bottom: 30px;
   background-color: #fff;
 }
+
 .thumb-sm {
   height: 36px;
   width: 36px;
@@ -159,8 +161,9 @@ body{
 .company-card .company-detail {
   margin: 0 0 50px 75px
 }
+
 .text-muted {
-  color: #98a6ad!important;
+  color: #98a6ad !important;
 }
 
 p {
@@ -178,23 +181,66 @@ p {
 }
 
 
-
 /************************************/
 
-.comment-card{
-  .header{
+.comment-card {
+  .header {
     display: flex;
     justify-content: space-between;
-    .user-info{
-      display:flex;
-      .username{}
-      .date{}
+
+    .user-info {
+      display: flex;
+
+      .username {
+      }
+
+      .date {
+      }
     }
 
   }
-  .body{
-    .desc{}
-    .attachments{}
+
+  .body {
+    .desc {
+    }
+
+    .attachments {
+    }
   }
 }
 
+.task-detail-wrapper {
+
+  .task-content {
+    padding: 20px;
+    background-color: #ffffff;
+    .header{
+      display: flex;
+    }
+  }
+
+  .task-operation {
+    background-color: #ffffff;
+    padding: 20px;
+    ul {
+      padding: 0;
+      list-style: none;
+
+
+      li {
+        display: flex;
+        align-items: center;
+
+        + li {
+          margin-top: 20px
+        }
+
+        .label {
+          width: 100px;
+          margin-bottom: 0;
+          font-size: 15px;
+        }
+      }
+    }
+  }
+}

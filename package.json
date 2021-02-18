@@ -37,6 +37,7 @@
     "redux-logger": "^3.0.6",
     "redux-promise-middleware": "^6.1.2",
     "redux-thunk": "^2.3.0",
+    "simple-react-lightbox": "^3.6.3",
     "suneditor": "^2.36.1",
     "suneditor-react": "^2.15.2"
   }

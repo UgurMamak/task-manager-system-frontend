@@ -1,4 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import "../styles/styles.scss";
 import Head from "next/head";
 
@@ -12,6 +11,7 @@ import SimpleReactLightbox from 'simple-react-lightbox';
 //components
 import Header from "../components/layout/header";
 import Footer from "../components/layout/footer";
+import React from "react";
 
 function App({Component, pageProps}) {
     const store = useStore(pageProps.initialReduxState);

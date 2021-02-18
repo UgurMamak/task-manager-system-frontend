@@ -5,6 +5,7 @@ $breakPointLG: 992px;
 $breakPointXL: 1200px;
 $breakPointXXL: 1440px;
 
+
 @function split-str($string, $separator) {
 
   $index: str-index($string, $separator);

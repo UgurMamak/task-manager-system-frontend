@@ -6,12 +6,6 @@
 body {
   min-height: 100vh;
   background-color: #f7f3f3;
-  @include responsive(min-lg){
-    background-color: red;
-}
-  @include responsive(min-xxl){
-    background-color: yellow;
-  }
 }
 
 .summary-card {
@@ -46,60 +40,49 @@ body {
 
 /************************************/
 
-.comment-card {
-  .header {
-    display: flex;
-    justify-content: space-between;
-
-    .user-info {
-      display: flex;
-
-      .username {
-      }
-
-      .date {
-      }
-    }
-
-  }
-
-  .body {
-    .desc {
-    }
-
-    .attachments {
-    }
-  }
-}
 
 .task-detail-wrapper {
+  margin-bottom: 20px;
 
   .task-content {
     padding: 20px;
     background-color: #ffffff;
-    .header{
+
+    .header {
       display: flex;
       margin-bottom: 10px;
-      .user-img{
+
+      .user-img {
         margin-right: 10px;
         width: 48px;
         height: 48px;
       }
     }
-    .body{
-      .task-title{}
-      .content{
+
+    .body {
+      .task-title {
+      }
+
+      .content {
 
       }
     }
-    .footer{
-      .date{}
+
+    .footer {
+      .date {
+      }
+
+      .attached-files {
+        .attached-img {
+        }
+      }
     }
   }
 
   .task-operation {
     background-color: #ffffff;
     padding: 20px;
+
     ul {
       padding: 0;
       list-style: none;
@@ -120,5 +103,69 @@ body {
         }
       }
     }
+  }
+}
+
+.comment-wrapper {
+  .comment-list {
+    // background-color: #ffffff;
+  }
+
+  .comment-card {
+    display: flex;
+    //padding: 10px;
+
+    + .comment-card {
+      margin-top: 25px;
+    }
+
+    .card-media{
+      img{
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+      }
+    }
+
+    .comment-info{
+      display: flex;
+      align-items: center;
+
+      .username{
+        font-size: 18px;
+        font-weight: bold;
+        color:#000000;
+        padding-right: 10px;
+      }
+      .date{
+        font-size: 15px;
+      }
+    }
+
+    .comment-options{
+      margin-left: auto;
+      &:focus{
+        outline: none;
+      }
+      .btn{
+        &:focus{
+          box-shadow: none;
+        }
+      }
+    }
+
+    .comment-content{
+      padding:15px;
+      background-color: #ffffff;
+    }
+
+    .attached-files{
+      .attached-img{
+
+          margin-top: 10px;
+
+      }
+    }
+
   }
 }

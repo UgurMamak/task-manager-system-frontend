@@ -21,8 +21,6 @@ class TaskDetail extends Component {
 
     addComment = (e) => {
         const editor = this.editorRef.current.editor;
-
-
         if (!this.state.toggle) {
             editor.show();
             console.log("ifde");
@@ -35,8 +33,10 @@ class TaskDetail extends Component {
 
         this.setState((prevState) => ({
             toggle: !(prevState.toggle)
-        }), console.log(this.state.toggle));
+        }));
 
+        // console.log(window.);
+        window.scrollTo(0, window.scrollY + 200)
 
     }
 
@@ -84,29 +84,34 @@ class TaskDetail extends Component {
                                     </div>
                                     <div className="footer">
                                         <div className="date">
-                                            <h5 className="">Atanma Tarihi</h5>
+                                            <h5 className="">Assaign date</h5>
                                             <p>01 December 2017 <small className="">1:00 PM</small></p>
                                         </div>
 
                                         <div className="attached-files">
-                                            <h5>ek resimler ve dosyalar burada gösterilir. İmageler Lighbox olsun
-                                                doc'klar download edilebilir olsun</h5>
+                                            <h5 className="">Attached Files</h5>
                                             <SRLWrapper>
-                                                <Link href="https://bootdey.com/img/Content/avatar/avatar1.png">
-                                                    <a><img src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                                            className="img-fluid img-thumbnail"
+                                                <div className="row content" id="content-page-one">
+                                                    <Link href="https://bootdey.com/img/Content/avatar/avatar1.png">
+                                                        <a className="attached-img col-2"><img
+                                                            src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                            className="img-fluid"
                                                             alt="attached-img"/></a>
-                                                </Link>
-                                                <Link href="https://bootdey.com/img/Content/avatar/avatar2.png">
-                                                    <a><img src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                                            className="img-fluid img-thumbnail"
+                                                    </Link>
+
+                                                    <Link href="https://bootdey.com/img/Content/avatar/avatar2.png">
+                                                        <a className="attached-img col-2"><img
+                                                            src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                                                            className="img-fluid"
                                                             alt="attached-img"/></a>
-                                                </Link>
-                                                <Link href="https://bootdey.com/img/Content/avatar/avatar3.png">
-                                                    <a><img src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                                            className="img-fluid img-thumbnail"
+                                                    </Link>
+                                                    <Link href="https://bootdey.com/img/Content/avatar/avatar3.png">
+                                                        <a className="attached-img col-2"><img
+                                                            src="https://bootdey.com/img/Content/avatar/avatar3.png"
+                                                            className="img-fluid"
                                                             alt="attached-img"/></a>
-                                                </Link>
+                                                    </Link>
+                                                </div>
                                             </SRLWrapper>
                                         </div>
                                     </div>
@@ -143,112 +148,192 @@ class TaskDetail extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="row">
-                        <div className="col-lg-10">
-                            <div className="comment-list">
-                                <div className="comment-card">
-                                    <div className="header">
-                                        <div className="item">
-                                            <Link href="/">
-                                                <a title={"fd"} className="user-info">
-                                                    <img className="d-flex mr-3 rounded-circle img-fluid"
-                                                         alt="64x64"
-                                                         src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                                         style={{width: '48px', height: '48px'}}/>
-                                                    <h4 className="username">Ugur Mamak</h4>
-                                                    <span className="date">January 8, 2021, 1:49 PM</span>
-                                                </a>
-                                            </Link>
-                                        </div>
-                                        <div className="item">
-                                            <div className="dropdown">
-                                                <button className="btn" type="button" id="dropdownMenuButton"
-                                                        data-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false">
-                                                    ...
-                                                </button>
-                                                <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                    <a className="dropdown-item" href="/">Sil</a>
-                                                    <a className="dropdown-item" href="/">Düzenle</a>
+                    <div className="comment-wrapper">
+                        <h1>Comments</h1>
+                        <div className="row">
+                            <div className="col-lg-8 col-24">
+                                <div className="comment-list">
+                                    <div className="comment-card">
+                                        <Link href="/">
+                                            <a title={"fd"} className="card-media">
+                                                <img className="d-flex mr-3 "
+                                                     alt="64x64"
+                                                     src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                                                />
+                                            </a>
+                                        </Link>
+                                        <div className="body">
+                                            <div className="comment-info">
+                                                <Link href="/"><a className="username">Ugur Mamak</a></Link>
+
+                                                <span className="date">January 8, 2021, 1:49 PM</span>
+                                                <div className="dropdown comment-options">
+                                                    <button className="btn" type="button" id="dropdownMenuButton"
+                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                        <i className="icon icon-more"></i>
+                                                    </button>
+                                                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        <a className="dropdown-item" href="/">Sil</a>
+                                                        <a className="dropdown-item" href="/">Düzenle</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="comment-content">
+                                                <div className="desc">
+                                                    <p className="text-muted">Lorem ipsum dolor sit amet, consectetur
+                                                        adipisicing elit. Voluptates, illo, iste itaque voluptas corrupti
+                                                        ratione reprehenderit magni similique? Tempore, quos delectus
+                                                        asperiores
+                                                        libero voluptas quod perferendis! Voluptate, quod illo rerum? Lorem
+                                                        ipsum dolor sit amet.</p>
+                                                </div>
+                                                <div className="attached-files">
+                                                    <SRLWrapper>
+                                                        <div className="row">
+                                                            <Link href="https://bootdey.com/img/Content/avatar/avatar1.png">
+                                                                <a className="attached-img col-lg-2 col-5"><img
+                                                                    src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                                    className="img-fluid"
+                                                                    alt="attached-img"/></a>
+                                                            </Link>
+                                                            <Link href="https://bootdey.com/img/Content/avatar/avatar2.png">
+                                                                <a className="attached-img col-lg-2 col-5"><img
+                                                                    src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                                                                    className="img-fluid"
+                                                                    alt="attached-img"/></a>
+                                                            </Link>
+                                                            <Link href="https://bootdey.com/img/Content/avatar/avatar3.png">
+                                                                <a className="attached-img col-lg-2 col-5"><img
+                                                                    src="https://bootdey.com/img/Content/avatar/avatar3.png"
+                                                                    className="img-fluid"
+                                                                    alt="attached-img"/></a>
+                                                            </Link>
+                                                        </div>
+                                                    </SRLWrapper>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="body">
-                                        <div className="desc">
-                                            <p className="text-muted">Lorem ipsum dolor sit amet, consectetur
-                                                adipisicing elit. Voluptates, illo, iste itaque voluptas corrupti
-                                                ratione reprehenderit magni similique? Tempore, quos delectus asperiores
-                                                libero voluptas quod perferendis! Voluptate, quod illo rerum? Lorem
-                                                ipsum dolor sit amet.</p>
-                                        </div>
-                                        <div className="attachments">
-                                            <div className="file-box">
-                                                <Link href="/">
-                                                    <a><img src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                                            className="img-fluid img-thumbnail"
-                                                            style={{width: '100px', height: '100px'}}
-                                                            alt="attached-img"/></a>
-                                                </Link>
-                                                <p className="font-13 mb-1 text-muted"><small>File one</small></p>
+
+                                    <div className="comment-card">
+                                        <Link href="/">
+                                            <a title={"fd"} className="card-media">
+                                                <img className="d-flex mr-3 "
+                                                     alt="64x64"
+                                                     src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                                                />
+                                            </a>
+                                        </Link>
+                                        <div className="body">
+                                            <div className="comment-info">
+                                                <Link href="/"><a className="username">Ugur Mamak</a></Link>
+
+                                                <span className="date">January 8, 2021, 1:49 PM</span>
+                                                <div className="dropdown comment-options">
+                                                    <button className="btn" type="button" id="dropdownMenuButton"
+                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                        <i className="icon icon-more"></i>
+                                                    </button>
+                                                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        <a className="dropdown-item" href="/">Sil</a>
+                                                        <a className="dropdown-item" href="/">Düzenle</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="comment-content">
+                                                <div className="desc">
+                                                    <p className="text-muted">Lorem ipsum dolor sit amet, consectetur
+                                                        adipisicing elit. Voluptates, illo, iste itaque voluptas corrupti
+                                                        ratione reprehenderit magni similique? Tempore, quos delectus
+                                                        asperiores
+                                                        libero voluptas quod perferendis! Voluptate, quod illo rerum? Lorem
+                                                        ipsum dolor sit amet.</p>
+                                                </div>
+                                                <div className="attached-files">
+                                                    <SRLWrapper>
+                                                        <div className="row">
+                                                            <Link href="https://bootdey.com/img/Content/avatar/avatar1.png">
+                                                                <a className="attached-img col-lg-2 col-5"><img
+                                                                    src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                                    className="img-fluid"
+                                                                    alt="attached-img"/></a>
+                                                            </Link>
+                                                            <Link href="https://bootdey.com/img/Content/avatar/avatar2.png">
+                                                                <a className="attached-img col-lg-2 col-5"><img
+                                                                    src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                                                                    className="img-fluid"
+                                                                    alt="attached-img"/></a>
+                                                            </Link>
+                                                            <Link href="https://bootdey.com/img/Content/avatar/avatar3.png">
+                                                                <a className="attached-img col-lg-2 col-5"><img
+                                                                    src="https://bootdey.com/img/Content/avatar/avatar3.png"
+                                                                    className="img-fluid"
+                                                                    alt="attached-img"/></a>
+                                                            </Link>
+                                                        </div>
+                                                    </SRLWrapper>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
-                            </div>
-                            <div className="comment-editor">
-                                <button className="btn btn-primary" onClick={this.addComment}>Yorum Ekle</button>
-                                <SunEditor
-                                    ref={this.editorRef}
-                                    autoFocus={true}
-                                    lang="en"
-                                    name="editor-deneme"
-                                    setOptions={{
-                                        showPathLabel: false,
-                                        height: "auto",
-                                        placeholder: "Enter your text here!!!",
-                                        buttonList: [
-                                            ["undo", "redo"],
-                                            ["font", "fontSize", "formatBlock"],
-                                            ["paragraphStyle"],
-                                            [
-                                                "bold",
-                                                "underline",
-                                                "italic",
-                                                "strike",
-                                                "subscript",
-                                                "superscript"
+                                <div className="comment-editor">
+                                    <button className="btn btn-primary" onClick={this.addComment}>Yorum Ekle</button>
+                                    <SunEditor
+                                        ref={this.editorRef}
+                                        autoFocus={true}
+                                        lang="en"
+                                        name="editor-deneme"
+                                        setOptions={{
+                                            showPathLabel: false,
+                                            height: "auto",
+                                            placeholder: "Enter your text here!!!",
+                                            buttonList: [
+                                                ["undo", "redo"],
+                                                ["font", "fontSize", "formatBlock"],
+                                                ["paragraphStyle"],
+                                                [
+                                                    "bold",
+                                                    "underline",
+                                                    "italic",
+                                                    "strike",
+                                                    "subscript",
+                                                    "superscript"
+                                                ],
+                                                ["fontColor", "hiliteColor"],
+                                                ["removeFormat"],
+                                                "/", // Line break
+                                                ["outdent", "indent"],
+                                                ["align", "horizontalRule", "list", "lineHeight"],
+                                                ["table", "link", "image"]
                                             ],
-                                            ["fontColor", "hiliteColor"],
-                                            ["removeFormat"],
-                                            "/", // Line break
-                                            ["outdent", "indent"],
-                                            ["align", "horizontalRule", "list", "lineHeight"],
-                                            ["table", "link", "image"]
-                                        ],
-                                        formats: ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6"],
-                                        font: [
-                                            "Arial",
-                                            "Calibri",
-                                            "Comic Sans",
-                                            "Courier",
-                                            "Garamond",
-                                            "Georgia",
-                                            "Impact",
-                                            "Lucida Console",
-                                            "Palatino Linotype",
-                                            "Segoe UI",
-                                            "Tahoma",
-                                            "Times New Roman",
-                                            "Trebuchet MS"
-                                        ]
-                                    }}
-                                    onChange={this.handleChange}
-                                    onImageUpload={this.handleImageUpload}
-                                    hide={true}
+                                            formats: ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6"],
+                                            font: [
+                                                "Arial",
+                                                "Calibri",
+                                                "Comic Sans",
+                                                "Courier",
+                                                "Garamond",
+                                                "Georgia",
+                                                "Impact",
+                                                "Lucida Console",
+                                                "Palatino Linotype",
+                                                "Segoe UI",
+                                                "Tahoma",
+                                                "Times New Roman",
+                                                "Trebuchet MS"
+                                            ]
+                                        }}
+                                        onChange={this.handleChange}
+                                        onImageUpload={this.handleImageUpload}
+                                        hide={true}
 
-                                />
+                                    />
 
+                                </div>
                             </div>
                         </div>
                     </div>

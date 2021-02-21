@@ -54,8 +54,9 @@ body {
 
       .user-img {
         margin-right: 10px;
-        width: 48px;
-        height: 48px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
       }
     }
 
@@ -82,6 +83,11 @@ body {
   .task-operation {
     background-color: #ffffff;
     padding: 20px;
+    margin-top: 20px;
+
+    @include responsive(min-lg) {
+      margin-top: 0;
+    }
 
     ul {
       padding: 0;
@@ -104,6 +110,17 @@ body {
       }
     }
   }
+
+  .attached-files {
+    .attached-file {
+      margin-top: 10px;
+    }
+
+    .attached-file-info {
+      color: grey;
+      font-size: 10px;
+    }
+  }
 }
 
 .comment-wrapper {
@@ -113,59 +130,115 @@ body {
 
   .comment-card {
     display: flex;
+    position: relative;
     //padding: 10px;
 
     + .comment-card {
       margin-top: 25px;
     }
 
-    .card-media{
-      img{
+    .header {
+      display: flex;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+    }
+
+    .body {
+      margin-top: 70px;
+      @include responsive(min-md) {
+        margin-top: 50px;
+        margin-left: 75px;
+      }
+    }
+
+    .card-media {
+      img {
         width: 60px;
         height: 60px;
         border-radius: 50%;
       }
     }
 
-    .comment-info{
+    .comment-info {
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      width: 100%;
 
-      .username{
-        font-size: 18px;
-        font-weight: bold;
-        color:#000000;
-        padding-right: 10px;
+      .item {
+        display: flex;
+        flex-direction: column;
+        @include responsive(min-md) {
+          flex-direction: row;
+          align-items: center;
+        }
       }
-      .date{
-        font-size: 15px;
+
+      .username {
+
+        font-size: 12px;
+        font-weight: bold;
+        color: #000000;
+
+        @include responsive(min-md) {
+          padding-right: 10px;
+          font-size: 18px;
+        }
+      }
+
+      .date {
+        font-size: 10px;
+        @include responsive(min-md) {
+          //  font-size: 15px;
+        }
       }
     }
 
-    .comment-options{
+    .comment-options {
       margin-left: auto;
-      &:focus{
+
+      &:focus {
         outline: none;
       }
-      .btn{
-        &:focus{
+
+      .btn {
+        &:focus {
           box-shadow: none;
         }
       }
     }
 
-    .comment-content{
-      padding:15px;
+    .comment-content {
+      padding: 15px;
       background-color: #ffffff;
     }
 
-    .attached-files{
-      .attached-img{
+    .attached-files {
+      .attached-file {
+        margin-top: 10px;
+      }
 
-          margin-top: 10px;
-
+      .attached-file-info {
+        color: grey;
+        font-size: 10px;
       }
     }
 
   }
+
+  .comment-editor-wrapper {
+    padding: 20px;
+
+  }
+}
+
+.progres-select{
+
+}
+
+
+.progress-type-select{
+  width: 100%;
 }

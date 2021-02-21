@@ -4,6 +4,14 @@ import "suneditor/dist/css/suneditor.min.css";
 import SunEditor, {buttonList} from "suneditor-react";
 import {SRLWrapper} from "simple-react-lightbox";
 
+import Select from "react-select";
+
+const progressTypeData = [
+    { value: '1', label: 'Görev Atandı(to do)' },
+    { value: '2', label: 'Yapım Aşamasında (inProgress)' },
+    { value: '3', label: 'Tamamlandı (done)' }
+]
+
 class TaskDetail extends Component {
 
     constructor(props) {
@@ -24,23 +32,40 @@ class TaskDetail extends Component {
         if (!this.state.toggle) {
             editor.show();
             console.log("ifde");
-            $(e.currentTarget).val('yorumu kapat');
+            console.log(e.currentTarget);
+            $(e.currentTarget).text('yorumu kapat');
+            window.scrollTo(0, window.scrollY + 200);
         } else {
             editor.hide();
             console.log("elsede");
-            $(e.currentTarget).val('yorum ekle');
+            $(e.currentTarget).text('yorum ekle');
+            window.scrollTo(0, window.scrollY - 200);
         }
 
         this.setState((prevState) => ({
             toggle: !(prevState.toggle)
         }));
 
-        // console.log(window.);
-        window.scrollTo(0, window.scrollY + 200)
+
+    }
+
+    save = (e) => {
+        e.preventDefault();
+        const editor = this.editorRef.current.editor;
+
+        console.log(editor);
+        console.log(editor.getContext().element);
+
+        // console.log(editor.getContents()); //html data
+        // console.log(editor.getImagesInfo()); //img info
+
+        //içerideki img ve textleri parçala
+        // img'lere alt bilgisini zorunlu hale getir
 
     }
 
     render() {
+
         return (
             <>
                 <h1>Kullanıcıların task içeriğini görebileceği yorum yazabileceği ve task ilerleme durumlarını
@@ -51,7 +76,7 @@ class TaskDetail extends Component {
                             <div className="col-lg-8">
                                 <div className="task-content">
                                     <div className="header">
-                                        <img className="img-fluid d-flex rounded-circle user-img"
+                                        <img className="img-fluid d-flex user-img"
                                              alt="64x64"
                                              src="https://bootdey.com/img/Content/avatar/avatar2.png"
                                         />
@@ -87,30 +112,40 @@ class TaskDetail extends Component {
                                             <h5 className="">Assaign date</h5>
                                             <p>01 December 2017 <small className="">1:00 PM</small></p>
                                         </div>
-
                                         <div className="attached-files">
                                             <h5 className="">Attached Files</h5>
                                             <SRLWrapper>
                                                 <div className="row content" id="content-page-one">
-                                                    <Link href="https://bootdey.com/img/Content/avatar/avatar1.png">
-                                                        <a className="attached-img col-2"><img
-                                                            src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                                            className="img-fluid"
-                                                            alt="attached-img"/></a>
-                                                    </Link>
+                                                    <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                        <Link href="https://bootdey.com/img/Content/avatar/avatar1.png">
+                                                            <a>
+                                                                <img
+                                                                    src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                                    className="img-fluid"
+                                                                    alt="attached-img"/>
 
-                                                    <Link href="https://bootdey.com/img/Content/avatar/avatar2.png">
-                                                        <a className="attached-img col-2"><img
-                                                            src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                                            className="img-fluid"
-                                                            alt="attached-img"/></a>
-                                                    </Link>
-                                                    <Link href="https://bootdey.com/img/Content/avatar/avatar3.png">
-                                                        <a className="attached-img col-2"><img
-                                                            src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                                            className="img-fluid"
-                                                            alt="attached-img"/></a>
-                                                    </Link>
+                                                            </a>
+                                                        </Link>
+                                                        <div className="attached-file-info">ek-1</div>
+                                                    </div>
+                                                    <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                        <Link href="https://bootdey.com/img/Content/avatar/avatar2.png">
+                                                            <a><img
+                                                                src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                                                                className="img-fluid"
+                                                                alt="attached-img"/></a>
+                                                        </Link>
+                                                        <div className="attached-file-info">ek-2</div>
+                                                    </div>
+                                                    <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                        <Link href="https://bootdey.com/img/Content/avatar/avatar3.png">
+                                                            <a><img
+                                                                src="https://bootdey.com/img/Content/avatar/avatar3.png"
+                                                                className="img-fluid"
+                                                                alt="attached-img"/></a>
+                                                        </Link>
+                                                        <div className="attached-file-info">ek-2</div>
+                                                    </div>
                                                 </div>
                                             </SRLWrapper>
                                         </div>
@@ -126,18 +161,17 @@ class TaskDetail extends Component {
                                         </li>
                                         <li>
                                             <h5 className="label">Progress</h5>
-                                            <div className="dropdown">
-                                                <button className="btn btn-secondary dropdown-toggle" type="button"
-                                                        id="dropdownMenuButton" data-toggle="dropdown"
-                                                        aria-haspopup="true" aria-expanded="false">
-                                                    Dropdown button
-                                                </button>
-                                                <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                    <a className="dropdown-item" href="#">Action</a>
-                                                    <a className="dropdown-item" href="#">Another action</a>
-                                                    <a className="dropdown-item" href="#">Something else here</a>
-                                                </div>
-                                            </div>
+                                            <Select
+                                                className="progress-type-select"
+                                                options={progressTypeData}
+                                                classNamePrefix="select"
+                                                instanceId="progress-type"
+                                                name="progress-type"
+                                                defaultValue={progressTypeData.filter(option => option.value === '2')}
+                                                /*onChange={value => props.input.onChange(value)}*/
+                                            />
+
+
                                         </li>
                                         <li>
                                             <h5 className="label">Priotriy</h5>
@@ -152,136 +186,8 @@ class TaskDetail extends Component {
                         <h1>Comments</h1>
                         <div className="row">
                             <div className="col-lg-8 col-24">
-                                <div className="comment-list">
-                                    <div className="comment-card">
-                                        <Link href="/">
-                                            <a title={"fd"} className="card-media">
-                                                <img className="d-flex mr-3 "
-                                                     alt="64x64"
-                                                     src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                                />
-                                            </a>
-                                        </Link>
-                                        <div className="body">
-                                            <div className="comment-info">
-                                                <Link href="/"><a className="username">Ugur Mamak</a></Link>
-
-                                                <span className="date">January 8, 2021, 1:49 PM</span>
-                                                <div className="dropdown comment-options">
-                                                    <button className="btn" type="button" id="dropdownMenuButton"
-                                                            data-toggle="dropdown" aria-haspopup="true"
-                                                            aria-expanded="false">
-                                                        <i className="icon icon-more"></i>
-                                                    </button>
-                                                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                        <a className="dropdown-item" href="/">Sil</a>
-                                                        <a className="dropdown-item" href="/">Düzenle</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="comment-content">
-                                                <div className="desc">
-                                                    <p className="text-muted">Lorem ipsum dolor sit amet, consectetur
-                                                        adipisicing elit. Voluptates, illo, iste itaque voluptas corrupti
-                                                        ratione reprehenderit magni similique? Tempore, quos delectus
-                                                        asperiores
-                                                        libero voluptas quod perferendis! Voluptate, quod illo rerum? Lorem
-                                                        ipsum dolor sit amet.</p>
-                                                </div>
-                                                <div className="attached-files">
-                                                    <SRLWrapper>
-                                                        <div className="row">
-                                                            <Link href="https://bootdey.com/img/Content/avatar/avatar1.png">
-                                                                <a className="attached-img col-lg-2 col-5"><img
-                                                                    src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                                                    className="img-fluid"
-                                                                    alt="attached-img"/></a>
-                                                            </Link>
-                                                            <Link href="https://bootdey.com/img/Content/avatar/avatar2.png">
-                                                                <a className="attached-img col-lg-2 col-5"><img
-                                                                    src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                                                    className="img-fluid"
-                                                                    alt="attached-img"/></a>
-                                                            </Link>
-                                                            <Link href="https://bootdey.com/img/Content/avatar/avatar3.png">
-                                                                <a className="attached-img col-lg-2 col-5"><img
-                                                                    src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                                                    className="img-fluid"
-                                                                    alt="attached-img"/></a>
-                                                            </Link>
-                                                        </div>
-                                                    </SRLWrapper>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="comment-card">
-                                        <Link href="/">
-                                            <a title={"fd"} className="card-media">
-                                                <img className="d-flex mr-3 "
-                                                     alt="64x64"
-                                                     src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                                />
-                                            </a>
-                                        </Link>
-                                        <div className="body">
-                                            <div className="comment-info">
-                                                <Link href="/"><a className="username">Ugur Mamak</a></Link>
-
-                                                <span className="date">January 8, 2021, 1:49 PM</span>
-                                                <div className="dropdown comment-options">
-                                                    <button className="btn" type="button" id="dropdownMenuButton"
-                                                            data-toggle="dropdown" aria-haspopup="true"
-                                                            aria-expanded="false">
-                                                        <i className="icon icon-more"></i>
-                                                    </button>
-                                                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                        <a className="dropdown-item" href="/">Sil</a>
-                                                        <a className="dropdown-item" href="/">Düzenle</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="comment-content">
-                                                <div className="desc">
-                                                    <p className="text-muted">Lorem ipsum dolor sit amet, consectetur
-                                                        adipisicing elit. Voluptates, illo, iste itaque voluptas corrupti
-                                                        ratione reprehenderit magni similique? Tempore, quos delectus
-                                                        asperiores
-                                                        libero voluptas quod perferendis! Voluptate, quod illo rerum? Lorem
-                                                        ipsum dolor sit amet.</p>
-                                                </div>
-                                                <div className="attached-files">
-                                                    <SRLWrapper>
-                                                        <div className="row">
-                                                            <Link href="https://bootdey.com/img/Content/avatar/avatar1.png">
-                                                                <a className="attached-img col-lg-2 col-5"><img
-                                                                    src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                                                    className="img-fluid"
-                                                                    alt="attached-img"/></a>
-                                                            </Link>
-                                                            <Link href="https://bootdey.com/img/Content/avatar/avatar2.png">
-                                                                <a className="attached-img col-lg-2 col-5"><img
-                                                                    src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                                                    className="img-fluid"
-                                                                    alt="attached-img"/></a>
-                                                            </Link>
-                                                            <Link href="https://bootdey.com/img/Content/avatar/avatar3.png">
-                                                                <a className="attached-img col-lg-2 col-5"><img
-                                                                    src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                                                    className="img-fluid"
-                                                                    alt="attached-img"/></a>
-                                                            </Link>
-                                                        </div>
-                                                    </SRLWrapper>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div className="comment-editor">
-                                    <button className="btn btn-primary" onClick={this.addComment}>Yorum Ekle</button>
+                                <div className="comment-editor-wrapper">
+                                    <button className="btn" onClick={this.addComment}>Yorum Ekle</button>
                                     <SunEditor
                                         ref={this.editorRef}
                                         autoFocus={true}
@@ -329,10 +235,284 @@ class TaskDetail extends Component {
                                         }}
                                         onChange={this.handleChange}
                                         onImageUpload={this.handleImageUpload}
-                                        hide={true}
-
+                                        className="deneme"
                                     />
+                                    <button className="btn btn-primary" onClick={this.save}>Kaydet</button>
+                                </div>
+                                <div className="comment-card">
+                                    <div className="header">
+                                        <Link href="/">
+                                            <a title={"fd"} className="card-media">
+                                                <img className="d-flex mr-3 "
+                                                     alt="64x64"
+                                                     src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                                                />
+                                            </a>
+                                        </Link>
+                                        <div className="comment-info">
+                                            <div className="item">
+                                                <Link href="/"><a className="username">Ugur Mamak</a></Link>
+                                                <span className="date">January 8, 2021, 1:49 PM</span>
+                                            </div>
+                                            <div className="item">
+                                                <div className="dropdown comment-options">
+                                                    <button className="btn" type="button" id="dropdownMenuButton"
+                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                        <i className="icon icon-more"></i>
+                                                    </button>
+                                                    <div className="dropdown-menu dropdown-menu-right"
+                                                         aria-labelledby="dropdownMenuButton">
+                                                        <a className="dropdown-item" href="/">Sil</a>
+                                                        <a className="dropdown-item" href="/">Düzenle</a>
+                                                    </div>
+                                                </div>
+                                            </div>
 
+                                        </div>
+                                    </div>
+                                    <div className="body">
+
+                                        <div className="comment-content">
+                                            <div className="desc">
+                                                <p className="text-muted">Lorem ipsum dolor sit amet, consectetur
+                                                    adipisicing elit. Voluptates, illo, iste itaque voluptas
+                                                    corrupti
+                                                    ratione reprehenderit magni similique? Tempore, quos delectus
+                                                    asperiores
+                                                    libero voluptas quod perferendis! Voluptate, quod illo rerum?
+                                                    Lorem
+                                                    ipsum dolor sit amet.</p>
+                                            </div>
+                                            <div className="attached-files">
+                                                <SRLWrapper>
+                                                    <div className="row content" id="content-page-one">
+                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                            <Link
+                                                                href="https://bootdey.com/img/Content/avatar/avatar1.png">
+                                                                <a>
+                                                                    <img
+                                                                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                                        className="img-fluid"
+                                                                        alt="attached-img"/>
+
+                                                                </a>
+                                                            </Link>
+                                                            <div className="attached-file-info">ek-1</div>
+                                                        </div>
+
+                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                            <Link
+                                                                href="https://bootdey.com/img/Content/avatar/avatar2.png">
+                                                                <a><img
+                                                                    src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                                                                    className="img-fluid"
+                                                                    alt="attached-img"/></a>
+                                                            </Link>
+                                                            <div className="attached-file-info">ek-2</div>
+                                                        </div>
+
+                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                            <Link
+                                                                href="https://bootdey.com/img/Content/avatar/avatar3.png">
+                                                                <a><img
+                                                                    src="https://bootdey.com/img/Content/avatar/avatar3.png"
+                                                                    className="img-fluid"
+                                                                    alt="attached-img"/></a>
+                                                            </Link>
+                                                            <div className="attached-file-info">ek-2</div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </SRLWrapper>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="comment-card">
+                                    <div className="header">
+                                        <Link href="/">
+                                            <a title={"fd"} className="card-media">
+                                                <img className="d-flex mr-3 "
+                                                     alt="64x64"
+                                                     src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                                                />
+                                            </a>
+                                        </Link>
+                                        <div className="comment-info">
+                                            <div className="item">
+                                                <Link href="/"><a className="username">Ugur Mamak</a></Link>
+                                                <span className="date">January 8, 2021, 1:49 PM</span>
+                                            </div>
+                                            <div className="item">
+                                                <div className="dropdown comment-options">
+                                                    <button className="btn" type="button" id="dropdownMenuButton"
+                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                        <i className="icon icon-more"></i>
+                                                    </button>
+                                                    <div className="dropdown-menu"
+                                                         aria-labelledby="dropdownMenuButton">
+                                                        <a className="dropdown-item" href="/">Sil</a>
+                                                        <a className="dropdown-item" href="/">Düzenle</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div className="body">
+
+                                        <div className="comment-content">
+                                            <div className="desc">
+                                                <p className="text-muted">Lorem ipsum dolor sit amet, consectetur
+                                                    adipisicing elit. Voluptates, illo, iste itaque voluptas
+                                                    corrupti
+                                                    ratione reprehenderit magni similique? Tempore, quos delectus
+                                                    asperiores
+                                                    libero voluptas quod perferendis! Voluptate, quod illo rerum?
+                                                    Lorem
+                                                    ipsum dolor sit amet.</p>
+                                            </div>
+                                            <div className="attached-files">
+                                                <SRLWrapper>
+                                                    <div className="row content" id="content-page-one">
+                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                            <Link
+                                                                href="https://bootdey.com/img/Content/avatar/avatar1.png">
+                                                                <a>
+                                                                    <img
+                                                                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                                        className="img-fluid"
+                                                                        alt="attached-img"/>
+
+                                                                </a>
+                                                            </Link>
+                                                            <div className="attached-file-info">ek-1</div>
+                                                        </div>
+
+                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                            <Link
+                                                                href="https://bootdey.com/img/Content/avatar/avatar2.png">
+                                                                <a><img
+                                                                    src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                                                                    className="img-fluid"
+                                                                    alt="attached-img"/></a>
+                                                            </Link>
+                                                            <div className="attached-file-info">ek-2</div>
+                                                        </div>
+
+                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                            <Link
+                                                                href="https://bootdey.com/img/Content/avatar/avatar3.png">
+                                                                <a><img
+                                                                    src="https://bootdey.com/img/Content/avatar/avatar3.png"
+                                                                    className="img-fluid"
+                                                                    alt="attached-img"/></a>
+                                                            </Link>
+                                                            <div className="attached-file-info">ek-2</div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </SRLWrapper>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="comment-card">
+                                    <div className="header">
+                                        <Link href="/">
+                                            <a title={"fd"} className="card-media">
+                                                <img className="d-flex mr-3 "
+                                                     alt="64x64"
+                                                     src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                                                />
+                                            </a>
+                                        </Link>
+                                        <div className="comment-info">
+                                            <div className="item">
+                                                <Link href="/"><a className="username">Ugur Mamak</a></Link>
+                                                <span className="date">January 8, 2021, 1:49 PM</span>
+                                            </div>
+                                            <div className="item">
+                                                <div className="dropdown comment-options">
+                                                    <button className="btn" type="button" id="dropdownMenuButton"
+                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                        <i className="icon icon-more"></i>
+                                                    </button>
+                                                    <div className="dropdown-menu"
+                                                         aria-labelledby="dropdownMenuButton">
+                                                        <a className="dropdown-item" href="/">Sil</a>
+                                                        <a className="dropdown-item" href="/">Düzenle</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div className="body">
+
+                                        <div className="comment-content">
+                                            <div className="desc">
+                                                <p className="text-muted">Lorem ipsum dolor sit amet, consectetur
+                                                    adipisicing elit. Voluptates, illo, iste itaque voluptas
+                                                    corrupti
+                                                    ratione reprehenderit magni similique? Tempore, quos delectus
+                                                    asperiores
+                                                    libero voluptas quod perferendis! Voluptate, quod illo rerum?
+                                                    Lorem
+                                                    ipsum dolor sit amet.</p>
+                                            </div>
+                                            <div className="attached-files">
+                                                <SRLWrapper>
+                                                    <div className="row content" id="content-page-one">
+                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                            <Link
+                                                                href="https://bootdey.com/img/Content/avatar/avatar1.png">
+                                                                <a>
+                                                                    <img
+                                                                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                                        className="img-fluid"
+                                                                        alt="attached-img"/>
+
+                                                                </a>
+                                                            </Link>
+                                                            <div className="attached-file-info">ek-1</div>
+                                                        </div>
+
+                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                            <Link
+                                                                href="https://bootdey.com/img/Content/avatar/avatar2.png">
+                                                                <a><img
+                                                                    src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                                                                    className="img-fluid"
+                                                                    alt="attached-img"/></a>
+                                                            </Link>
+                                                            <div className="attached-file-info">ek-2</div>
+                                                        </div>
+
+                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                            <Link
+                                                                href="https://bootdey.com/img/Content/avatar/avatar3.png">
+                                                                <a><img
+                                                                    src="https://bootdey.com/img/Content/avatar/avatar3.png"
+                                                                    className="img-fluid"
+                                                                    alt="attached-img"/></a>
+                                                            </Link>
+                                                            <div className="attached-file-info">ek-2</div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </SRLWrapper>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

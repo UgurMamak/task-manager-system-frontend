@@ -28,71 +28,91 @@ function transform(node, index) {
 
     // return null to block certain elements
     // don't allow <span> elements
-/*    if (node.type === "tag" && node.name === "span") {
-        return null;
-    }
+    /*    if (node.type === "tag" && node.name === "span") {
+            return null;
+        }
 
-    // Transform <ul> into <ol>
-    // A node can be modified and passed to the convertNodeToElement function which will continue to render it and it's children
-    if (node.type === "tag" && node.name === "ul") {
-        node.name = "ol";
-        return convertNodeToElement(node, index, transform);
-    }
+        // Transform <ul> into <ol>
+        // A node can be modified and passed to the convertNodeToElement function which will continue to render it and it's children
+        if (node.type === "tag" && node.name === "ul") {
+            node.name = "ol";
+            return convertNodeToElement(node, index, transform);
+        }
 
-    // return an <i> element for every <b>
-    // a key must be included for all elements
-    if (node.type === "tag" && node.name === "b") {
-        return <i key={index}>{processNodes(node.children, transform)}</i>;
-    }
+        // return an <i> element for every <b>
+        // a key must be included for all elements
+        if (node.type === "tag" && node.name === "b") {
+            return <i key={index}>{processNodes(node.children, transform)}</i>;
+        }
 
-    // all links must open in a new window
-    if (node.type === "tag" && node.name === "a") {
-        node.attribs.target = "_blank";
-        // console.log(node);
-        // console.log(index);
-        return convertNodeToElement(node, index, transform);
-    }
+        // all links must open in a new window
+        if (node.type === "tag" && node.name === "a") {
+            node.attribs.target = "_blank";
+            // console.log(node);
+            // console.log(index);
+            return convertNodeToElement(node, index, transform);
+        }
 
-    if (node.type === "tag" && node.name === "button") {
-        return (
-            <Button variant="contained" color="primary" key={index}>
-                {processNodes(node.children, transform)}
-            </Button>
-        );
-    }*/
-
-    if(node.type===""){}
-
-    if (node.type === "tag" && node.name === "figure") {
-        console.log(node.children);
-        //console.log(node.children.filter(item=>item.attribs));
-
-        /*return( <SRLWrapper key={index}>
-                    <Link href={node.children[0].attribs.src}>
-                        <a>
-                            {processNodes(node.children, transform)}
-                        </a>
-                    </Link>
-                </SRLWrapper>);*/
-
-      /*  replace:function g(node) {
-            return React.createElement('div', {}, 'replaced');
+        if (node.type === "tag" && node.name === "button") {
+            return (
+                <Button variant="contained" color="primary" key={index}>
+                    {processNodes(node.children, transform)}
+                </Button>
+            );
         }*/
 
-        return( <SRLWrapper key={index}>
-            <div className="row content" id="content-page-four">
-                <div className="attached-file col-lg-2 col-md-3 col-6">
-                    <Link href={node.children[0].attribs.src}>
-                        <a>
-                            {React.createElement('img',{src:node.children[0].attribs.src, className:"img-fluid",alt:"attached-img"})}
-                        </a>
-                    </Link>
-                </div>
-            </div>
-                </SRLWrapper>);
+    /* if (node.type === "tag" && node.attribs.class === "se-component se-image-container __se__float-none") {
+         return (<SRLWrapper
+             key={index}>
+             <div className="row content" id={index}>{processNodes(node.children, transform)}</div>
+         </SRLWrapper>)
+     }
 
+     if (node.type === "tag" && node.name === "figure") {
+         console.log(node.children);
+         /!*return( <SRLWrapper key={index}>
+                     <Link href={node.children[0].attribs.src}>
+                         <a>
+                             {processNodes(node.children, transform)}
+                         </a>
+                     </Link>
+                 </SRLWrapper>);*!/
 
+         return (
+             <div className="attached-file col-lg-2 col-md-3 col-6">
+                 <Link href={node.children[0].attribs.src}>
+                     <a>
+                         {React.createElement('img', {
+                             src: node.children[0].attribs.src,
+                             className: "img-fluid",
+                             alt: "attached-img5"
+                         })}
+                     </a>
+                 </Link>
+             </div>
+         );
+     }*/
+
+    if (node.type === "tag" && node.attribs.class === "se-component se-image-container __se__float-none") {
+        return (<>
+            {processNodes(node.children, transform)}
+        </>)
     }
+
+    if (node.type === "tag" && node.name === "figure") {
+        return (
+            <div className="attached-file col-lg-2 col-md-3 col-6">
+                <Link href={node.children[0].attribs.src}>
+                    <a>
+                        {React.createElement('img', {
+                            src: node.children[0].attribs.src,
+                            className: "img-fluid",
+                            alt: "attached-img5"
+                        })}
+                    </a>
+                </Link></div>);
+    }
+
 }
 
 class TaskDetail extends Component {
@@ -107,6 +127,7 @@ class TaskDetail extends Component {
     }
 
     componentDidMount() {
+        console.log(this.editorRef.current.editor);
 
         //dropdown açılınca menu'nün ekran dışına taşmasını önlemek için ekledim.
         $('.comment-options').on('show.bs.dropdown', function () {
@@ -157,7 +178,11 @@ class TaskDetail extends Component {
         // console.log(editor.getContents()); //html data
         // console.log(editor.getImagesInfo()); //img info
 
-        localStorage.setItem('editorData',editor.getContents())
+        //localStorage.setItem('editorData', editor.getContents())
+
+        var data = ReactHtmlParser(editor.getContents(), options);
+        console.log("data", data);
+        localStorage.setItem('newData', data);
 
     }
 
@@ -643,11 +668,13 @@ class TaskDetail extends Component {
                                     </div>
                                     <div className="body">
                                         <div className="comment-content">
-                                            <div className="attached-files">
-                                                {
-                                                    ReactHtmlParser(html, options)
-                                                }
-                                            </div>
+                                            <SRLWrapper>
+                                                <div className="row content">
+                                                    {
+                                                        ReactHtmlParser(html, options)
+                                                    }
+                                                </div>
+                                            </SRLWrapper>
                                         </div>
                                     </div>
                                 </div>

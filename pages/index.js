@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
 import Head from "next/head";
 import Layout from "../components/layout/layout"
-import Link from "next/link"
-
-
-
+import Link from "next/link";
 class Index extends Component {
+
+    componentDidMount() {
+
+        //this.setState({ loading: false });
+    }
+
     render() {
         return (
             <Layout>
@@ -186,3 +189,4 @@ class Index extends Component {
 }
 
 export default Index;
+

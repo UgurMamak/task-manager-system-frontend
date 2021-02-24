@@ -12,12 +12,6 @@ import SimpleReactLightbox from 'simple-react-lightbox';
 import Header from "../components/layout/header";
 import Footer from "../components/layout/footer";
 import React from "react";
-import 'babel-polyfill';
-
-/*import $ from 'jquery';
-
-
-window.jQuery = $;*/
 
 
 function App({Component, pageProps}) {

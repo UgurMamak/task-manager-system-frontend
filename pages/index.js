@@ -206,10 +206,9 @@ export default Index;
 
 import React, {Component} from 'react';
 import {render} from 'react-dom';
-import {EditorState} from "draft-js";
 import dynamic from "next/dynamic";
 import 'draft-js/dist/Draft.css';
-import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import {EditorState, convertToRaw,ContentState} from "draft-js";
 
 const Editor = dynamic(
     () => {
@@ -217,12 +216,29 @@ const Editor = dynamic(
     },
     {ssr: false}
 );
+import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 
-function uploadImageCallBack(file) {
+const htmlToDraft = dynamic(
+    () => {
+        return import("html-to-draftjs").then(mod => mod.htmlToDraft);
+    },
+    {ssr: false}
+);
+
+const draftToHtml = () => dynamic(
+    () => {
+        return import("draftjs-to-html");
+    },
+    {ssr: false}
+);
+
+//form işlemi yapar (request)
+/*function uploadImageCallBack(file) {
     return new Promise(
         (resolve, reject) => {
-            const xhr = new XMLHttpRequest();
+            console.log("fileData",file);
+        /!*    const xhr = new XMLHttpRequest();
             xhr.open('POST', 'https://api.imgur.com/3/image');
             xhr.setRequestHeader('Authorization', 'Client-ID XXXXX');
             const data = new FormData();
@@ -235,12 +251,23 @@ function uploadImageCallBack(file) {
             xhr.addEventListener('error', () => {
                 const error = JSON.parse(xhr.responseText);
                 reject(error);
-            });
+            });*!/
         }
     );
+}*/
+
+//editorde göstermek için
+function uploadImageCallBack(file) {
+    return new Promise(
+        (resolve, reject) => {
+            const reader = new FileReader(); // eslint-disable-line no-undef
+            reader.onload = e => resolve({data: {link: e.target.result}});
+            reader.onerror = e => reject(e);
+            reader.readAsDataURL(file);
+        });
 }
 
-export default class EditorContainer extends React.Component {
+/*export default class EditorContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -249,10 +276,12 @@ export default class EditorContainer extends React.Component {
     }
 
     onEditorStateChange = (editorState) => {
-        // console.log(editorState)
+        console.log(editorState.getCurrentContent())
         this.setState({
             editorState,
         });
+
+        console.log(draftToHtml(editorState.getCurrentContent()));
     };
 
     render() {
@@ -268,14 +297,52 @@ export default class EditorContainer extends React.Component {
                         textAlign: {inDropdown: true},
                         link: {inDropdown: true},
                         history: {inDropdown: true},
-                        image: {uploadCallback: uploadImageCallBack, alt: {present: true, mandatory: true}},
+                        /!*  image: {uploadCallback: uploadImageCallBack, alt: {present: true, mandatory: true}},*!/
+                        image: {
+                            uploadCallback: uploadImageCallBack,
+                            previewImage: true,
+                            alt: {present: true, mandatory: true}
+                        },
                     }}
                 />
             </div>
+
+            <textarea
+                disabled
+                value={draftToHtml(convertToRaw(editorState.getCurrentContent()))}
+            />
+
         </>);
     }
+}*/
+
+export default class EditorConvertToHTML extends Component {
+    state = {
+        editorState: EditorState.createEmpty(),
+    }
+
+    onEditorStateChange = (editorState) => {
+        this.setState({
+            editorState,
+        });
+    };
+
+    render() {
+        const { editorState } = this.state;
+        return (
+            <div>
+                <Editor
+                    editorState={editorState}
+                    wrapperClassName="demo-wrapper"
+                    editorClassName="demo-editor"
+                    onEditorStateChange={this.onEditorStateChange}
+                />
+                <textarea
+                    style={{width:'100%'}}
+                    disabled
+                    value={draftToHtml(convertToRaw(editorState.getCurrentContent()))}
+                />
+            </div>
+        );
+    }
 }
-
-
-
-

@@ -4,7 +4,7 @@ import "suneditor/dist/css/suneditor.min.css";
 import SunEditor, {buttonList} from "suneditor-react";
 import {SRLWrapper} from "simple-react-lightbox";
 import Select from "react-select";
-import ReactHtmlParser, {processNodes} from "react-html-parser";
+import ReactHtmlParser, {processNodes,convertNodeToElement} from "react-html-parser";
 
 const progressTypeData = [
     {value: '1', label: 'Görev Atandı(to do)'},
@@ -13,22 +13,59 @@ const progressTypeData = [
 ]
 
 const options = {
-
     transform
 };
-
 function transform(node, index) {
+
+    if (node.type === "tag" && node.attribs.class === "se-component se-image-container __se__float-none") {
+        return (<>
+            {processNodes(node.children, transform)}
+        </>)
+    }
+/*
+    if (node.type === "tag" && node.name === "figure") {
+        return (
+            <div className="attached-file col-lg-2 col-md-3 col-6">
+                <Link href={node.children[0].attribs.src}>
+                    <a>
+                        {React.createElement('img', {
+                            src: node.children[0].attribs.src,
+                            className: "img-fluid",
+                            alt: "attached-img5"
+                        })}
+                    </a>
+                </Link></div>);
+    }*/
+
+    if(node.type==="tag"&& node.name==="figure"){
+       // console.log(node);
+
+      /*  return (<div>
+            {processNodes(node.children, transform)}
+        </div>)*/
+    }
+
+}
+
+
+
+/*const optionsTwo = {
+    transformTwo
+};
+
+function transformTwo(node, index) {
+
     console.log("çalıştı");
     console.log(node);
     console.log(index);
 
-    /*if(node.type==="tag" && node.attribs.class==="se-component se-image-container __se__float-none"){
+    /!*if(node.type==="tag" && node.attribs.class==="se-component se-image-container __se__float-none"){
         return null;
-    }*/
+    }*!/
 
     // return null to block certain elements
     // don't allow <span> elements
-    /*    if (node.type === "tag" && node.name === "span") {
+    /!*    if (node.type === "tag" && node.name === "span") {
             return null;
         }
 
@@ -59,9 +96,9 @@ function transform(node, index) {
                     {processNodes(node.children, transform)}
                 </Button>
             );
-        }*/
+        }*!/
 
-    /* if (node.type === "tag" && node.attribs.class === "se-component se-image-container __se__float-none") {
+    /!* if (node.type === "tag" && node.attribs.class === "se-component se-image-container __se__float-none") {
          return (<SRLWrapper
              key={index}>
              <div className="row content" id={index}>{processNodes(node.children, transform)}</div>
@@ -91,7 +128,7 @@ function transform(node, index) {
                  </Link>
              </div>
          );
-     }*/
+     }*!/
 
     if (node.type === "tag" && node.attribs.class === "se-component se-image-container __se__float-none") {
         return (<>
@@ -113,7 +150,7 @@ function transform(node, index) {
                 </Link></div>);
     }
 
-}
+}*/
 
 class TaskDetail extends Component {
 
@@ -122,7 +159,9 @@ class TaskDetail extends Component {
         this.editorRef = React.createRef();
         this.state = {
             toggle: false,
+            templateHtml:[],
             html: ""
+
         }
     }
 
@@ -180,9 +219,20 @@ class TaskDetail extends Component {
 
         //localStorage.setItem('editorData', editor.getContents())
 
-        var data = ReactHtmlParser(editor.getContents(), options);
-        console.log("data", data);
-        localStorage.setItem('newData', data);
+    }
+
+    template = () => {
+        //  const data = ReactHtmlParser(localStorage.getItem('editorData'), options2);
+        console.log("localData",localStorage.getItem('editorData'));
+        this.setState({templateHtml: ReactHtmlParser(localStorage.getItem('editorData'), options)},()=>{
+            console.log("data",this.state.templateHtml);
+            this.state.templateHtml.map(item=>{
+                console.log(typeof (item.type));
+            });
+            console.log("gelen",this.state.templateHtml.filter(item=>item.type==="Symbol(react.fragment)"));
+        });
+
+
 
     }
 
@@ -190,8 +240,14 @@ class TaskDetail extends Component {
     render() {
         const {html} = this.state;
 
+        console.log("temphtml",this.state.templateHtml);
         return (
             <>
+                <button onClick={this.template}>Deneme</button>
+                <div>
+                    {
+                        this.state.templateHtml}
+                </div>
                 <div className="container">
                     <div className="task-detail-wrapper">
                         <div className="row">
@@ -671,7 +727,7 @@ class TaskDetail extends Component {
                                             <SRLWrapper>
                                                 <div className="row content">
                                                     {
-                                                        ReactHtmlParser(html, options)
+                                                        // ReactHtmlParser(html, options)
                                                     }
                                                 </div>
                                             </SRLWrapper>

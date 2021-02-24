@@ -12,25 +12,29 @@ import SimpleReactLightbox from 'simple-react-lightbox';
 import Header from "../components/layout/header";
 import Footer from "../components/layout/footer";
 import React from "react";
+import 'babel-polyfill';
+
+/*import $ from 'jquery';
+
+
+window.jQuery = $;*/
+
 
 function App({Component, pageProps}) {
     const store = useStore(pageProps.initialReduxState);
 
     return (
-        <>
-            <Provider store={store}>
-                <Head>
-                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
-                    <script
-                        src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
-                </Head>
-                <SimpleReactLightbox>
-                    <Component {...pageProps} />
-                </SimpleReactLightbox>
-
-            </Provider>
-        </>
+        <Provider store={store}>
+            <Head>
+                <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+                <script
+                    src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+            </Head>
+            <SimpleReactLightbox>
+                <Component {...pageProps} />
+            </SimpleReactLightbox>
+        </Provider>
     )
 }
 

@@ -1,12 +1,18 @@
+/*
 import React, {Component} from 'react';
 import Head from "next/head";
 import Layout from "../components/layout/layout"
 import Link from "next/link";
+import {Editor, EditorState} from 'draft-js';
+import 'draft-js/dist/Draft.css';
+
+
 class Index extends Component {
 
-    componentDidMount() {
-
-        //this.setState({ loading: false });
+    constructor(props) {
+        super(props);
+        this.state = {editorState: EditorState.createEmpty()};
+        this.onChange = editorState => this.setState({editorState});
     }
 
     render() {
@@ -18,7 +24,8 @@ class Index extends Component {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-10">
-                            <h3>Kullanıcı giriş yaptığında anasayfada kendisine atanmış işleri ve durumlarını görebilsin</h3>
+                            <h3>Kullanıcı giriş yaptığında anasayfada kendisine atanmış işleri ve durumlarını
+                                görebilsin</h3>
                             <Link href="/">
                                 <a title="" className="summary-card">
                                     <div className="header">
@@ -175,7 +182,8 @@ class Index extends Component {
                         <h1 className="title">Task Title</h1>
                         <div className="body">
                             <div className="content">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi facere q   uisquam repellendus!
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi facere q uisquam
+                                repellendus!
                             </div>
                             <div className="footer">
                                 İmg ve doc burada
@@ -183,10 +191,91 @@ class Index extends Component {
                         </div>
                     </div>
                 </div>
+                <div>
+                    <Editor editorState={this.state.editorState} onChange={this.onChange} />
+                </div>
             </Layout>
         );
     }
 }
 
 export default Index;
+
+
+*/
+
+import React, {Component} from 'react';
+import {render} from 'react-dom';
+import {EditorState} from "draft-js";
+import dynamic from "next/dynamic";
+import 'draft-js/dist/Draft.css';
+import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+
+const Editor = dynamic(
+    () => {
+        return import("react-draft-wysiwyg").then(mod => mod.Editor);
+    },
+    {ssr: false}
+);
+
+
+function uploadImageCallBack(file) {
+    return new Promise(
+        (resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'https://api.imgur.com/3/image');
+            xhr.setRequestHeader('Authorization', 'Client-ID XXXXX');
+            const data = new FormData();
+            data.append('image', file);
+            xhr.send(data);
+            xhr.addEventListener('load', () => {
+                const response = JSON.parse(xhr.responseText);
+                resolve(response);
+            });
+            xhr.addEventListener('error', () => {
+                const error = JSON.parse(xhr.responseText);
+                reject(error);
+            });
+        }
+    );
+}
+
+export default class EditorContainer extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            editorState: EditorState.createEmpty(),
+        };
+    }
+
+    onEditorStateChange = (editorState) => {
+        // console.log(editorState)
+        this.setState({
+            editorState,
+        });
+    };
+
+    render() {
+        const {editorState} = this.state;
+        return (<>
+            <div className='editor'>
+                <Editor
+                    editorState={editorState}
+                    onEditorStateChange={this.onEditorStateChange}
+                    toolbar={{
+                        inline: {inDropdown: true},
+                        list: {inDropdown: true},
+                        textAlign: {inDropdown: true},
+                        link: {inDropdown: true},
+                        history: {inDropdown: true},
+                        image: {uploadCallback: uploadImageCallBack, alt: {present: true, mandatory: true}},
+                    }}
+                />
+            </div>
+        </>);
+    }
+}
+
+
+
 

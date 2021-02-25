@@ -5,8 +5,8 @@ import Head from "next/head";
 import {Provider} from "react-redux";
 import {useStore} from "../redux/store";
 
-//Plugin
-import SimpleReactLightbox from 'simple-react-lightbox';
+
+
 
 //components
 import Header from "../components/layout/header";
@@ -25,9 +25,7 @@ function App({Component, pageProps}) {
                 <script
                     src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
             </Head>
-            <SimpleReactLightbox>
                 <Component {...pageProps} />
-            </SimpleReactLightbox>
         </Provider>
     )
 }

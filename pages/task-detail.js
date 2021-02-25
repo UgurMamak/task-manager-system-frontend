@@ -1,10 +1,20 @@
 import React, {Component} from 'react';
 import Link from "next/link"
-import "suneditor/dist/css/suneditor.min.css";
-import SunEditor, {buttonList} from "suneditor-react";
-import {SRLWrapper} from "simple-react-lightbox";
+import dynamic from "next/dynamic";
 import Select from "react-select";
-import ReactHtmlParser, {processNodes,convertNodeToElement} from "react-html-parser";
+import 'draft-js/dist/Draft.css';
+import {EditorState, convertToRaw, ContentState} from "draft-js";
+import * as draftToHtml from 'draftjs-to-html';
+
+const Editor = dynamic(
+    () => {
+        return import("react-draft-wysiwyg").then(mod => mod.Editor);
+    },
+    {ssr: false}
+);
+import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import SimpleReactLightbox, {SRLWrapper} from "simple-react-lightbox";
+import ReactHtmlParser, {processNodes, convertNodeToElement} from "react-html-parser";
 
 const progressTypeData = [
     {value: '1', label: 'Görev Atandı(to do)'},
@@ -15,39 +25,28 @@ const progressTypeData = [
 const options = {
     transform
 };
+
 function transform(node, index) {
 
-    if (node.type === "tag" && node.attribs.class === "se-component se-image-container __se__float-none") {
-        return (<>
-            {processNodes(node.children, transform)}
-        </>)
-    }
-/*
-    if (node.type === "tag" && node.name === "figure") {
+    console.log(node);
+
+    if (node.type === "tag" && node.name === "img") {
         return (
             <div className="attached-file col-lg-2 col-md-3 col-6">
-                <Link href={node.children[0].attribs.src}>
+                <Link href={node.attribs.src}>
                     <a>
                         {React.createElement('img', {
-                            src: node.children[0].attribs.src,
+                            src: node.attribs.src,
                             className: "img-fluid",
                             alt: "attached-img5"
                         })}
+                        {processNodes(node.children, transform)}
                     </a>
                 </Link></div>);
-    }*/
-
-    if(node.type==="tag"&& node.name==="figure"){
-       // console.log(node);
-
-      /*  return (<div>
-            {processNodes(node.children, transform)}
-        </div>)*/
     }
 
+
 }
-
-
 
 /*const optionsTwo = {
     transformTwo
@@ -152,21 +151,33 @@ function transformTwo(node, index) {
 
 }*/
 
+//editorde img göstermek için
+function uploadImageCallBack(file) {
+    return new Promise(
+        (resolve, reject) => {
+            const reader = new FileReader(); // eslint-disable-line no-undef
+            reader.onload = e => resolve({data: {link: e.target.result}});
+            reader.onerror = e => reject(e);
+            reader.readAsDataURL(file);
+        });
+}
+
 class TaskDetail extends Component {
 
     constructor(props) {
         super(props);
-        this.editorRef = React.createRef();
+
         this.state = {
             toggle: false,
-            templateHtml:[],
-            html: ""
+            templateHtml: [],
+            html: "",
+            editorState: EditorState.createEmpty(),
 
         }
     }
 
     componentDidMount() {
-        console.log(this.editorRef.current.editor);
+
 
         //dropdown açılınca menu'nün ekran dışına taşmasını önlemek için ekledim.
         $('.comment-options').on('show.bs.dropdown', function () {
@@ -206,41 +217,33 @@ class TaskDetail extends Component {
 
     save = (e) => {
         e.preventDefault();
-        const editor = this.editorRef.current.editor;
-
-        console.log("editor", editor);
-        console.log("getContext", editor.getContext().element);
-
-        console.log("getContets", editor.getContents(false));
-        console.log("save", editor.save());
-
-        // console.log(editor.getContents()); //html data
-        // console.log(editor.getImagesInfo()); //img info
-
-        //localStorage.setItem('editorData', editor.getContents())
-
+        localStorage.setItem('editorData', draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())));
     }
 
     template = () => {
         //  const data = ReactHtmlParser(localStorage.getItem('editorData'), options2);
-        console.log("localData",localStorage.getItem('editorData'));
-        this.setState({templateHtml: ReactHtmlParser(localStorage.getItem('editorData'), options)},()=>{
-            console.log("data",this.state.templateHtml);
-            this.state.templateHtml.map(item=>{
+        console.log("localData", localStorage.getItem('editorData'));
+        this.setState({templateHtml: ReactHtmlParser(localStorage.getItem('editorData'), options)}, () => {
+            console.log("data", this.state.templateHtml);
+            this.state.templateHtml.map(item => {
                 console.log(typeof (item.type));
             });
-            console.log("gelen",this.state.templateHtml.filter(item=>item.type==="Symbol(react.fragment)"));
+            console.log("gelen", this.state.templateHtml.filter(item => item.type === "Symbol(react.fragment)"));
         });
-
-
-
     }
 
+    onEditorStateChange = (editorState) => {
+        //console.log(editorState.getCurrentContent())
+        this.setState({
+            editorState,
+        });
+        // console.log(draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())));
+    };
 
     render() {
         const {html} = this.state;
+        const {editorState} = this.state;
 
-        console.log("temphtml",this.state.templateHtml);
         return (
             <>
                 <button onClick={this.template}>Deneme</button>
@@ -292,40 +295,45 @@ class TaskDetail extends Component {
                                         </div>
                                         <div className="attached-files">
                                             <h5 className="">Attached Files</h5>
-                                            <SRLWrapper>
-                                                <div className="row content" id="content-page-one">
-                                                    <div className="attached-file col-lg-2 col-md-3 col-6">
-                                                        <Link href="https://bootdey.com/img/Content/avatar/avatar1.png">
-                                                            <a>
-                                                                <img
-                                                                    src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                                                    className="img-fluid"
-                                                                    alt="attached-img"/>
+                                            <SimpleReactLightbox>
+                                                <SRLWrapper>
+                                                    <div className="row content" id="content-page-one">
+                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                            <Link
+                                                                href="https://bootdey.com/img/Content/avatar/avatar1.png">
+                                                                <a>
+                                                                    <img
+                                                                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                                        className="img-fluid"
+                                                                        alt="attached-img"/>
 
-                                                            </a>
-                                                        </Link>
-                                                        <div className="attached-file-info">ek-1</div>
+                                                                </a>
+                                                            </Link>
+                                                            <div className="attached-file-info">ek-1</div>
+                                                        </div>
+                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                            <Link
+                                                                href="https://bootdey.com/img/Content/avatar/avatar2.png">
+                                                                <a><img
+                                                                    src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                                                                    className="img-fluid"
+                                                                    alt="attached-img"/></a>
+                                                            </Link>
+                                                            <div className="attached-file-info">ek-2</div>
+                                                        </div>
+                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                            <Link
+                                                                href="https://bootdey.com/img/Content/avatar/avatar3.png">
+                                                                <a><img
+                                                                    src="https://bootdey.com/img/Content/avatar/avatar3.png"
+                                                                    className="img-fluid"
+                                                                    alt="attached-img"/></a>
+                                                            </Link>
+                                                            <div className="attached-file-info">ek-2</div>
+                                                        </div>
                                                     </div>
-                                                    <div className="attached-file col-lg-2 col-md-3 col-6">
-                                                        <Link href="https://bootdey.com/img/Content/avatar/avatar2.png">
-                                                            <a><img
-                                                                src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                                                className="img-fluid"
-                                                                alt="attached-img"/></a>
-                                                        </Link>
-                                                        <div className="attached-file-info">ek-2</div>
-                                                    </div>
-                                                    <div className="attached-file col-lg-2 col-md-3 col-6">
-                                                        <Link href="https://bootdey.com/img/Content/avatar/avatar3.png">
-                                                            <a><img
-                                                                src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                                                className="img-fluid"
-                                                                alt="attached-img"/></a>
-                                                        </Link>
-                                                        <div className="attached-file-info">ek-2</div>
-                                                    </div>
-                                                </div>
-                                            </SRLWrapper>
+                                                </SRLWrapper>
+                                            </SimpleReactLightbox>
                                         </div>
                                     </div>
                                 </div>
@@ -366,52 +374,23 @@ class TaskDetail extends Component {
                             <div className="col-lg-8 col-24">
                                 <div className="comment-editor-wrapper">
                                     <button className="btn" onClick={this.addComment}>Yorum Ekle</button>
-                                    <SunEditor
-                                        ref={this.editorRef}
-                                        lang="en"
-                                        name="editor-deneme"
-                                        setOptions={{
-                                            showPathLabel: false,
-                                            height: "auto",
-                                            placeholder: "Enter your text here!!!",
-                                            buttonList: [
-                                                ["undo", "redo"],
-                                                ["paragraphStyle"],
-                                                [
-                                                    "bold",
-                                                    "underline",
-                                                    "italic",
-                                                    "strike",
-                                                    "subscript",
-                                                    "superscript"
-                                                ],
-                                                ["fontColor", "hiliteColor"],
-                                                ["removeFormat"],
-                                                "/", // Line break
-                                                ["outdent", "indent"],
-                                                ["align", "horizontalRule", "list", "lineHeight"],
-                                                ["table", "link", "image"]
-                                            ],
-                                            formats: ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6"],
-                                            font: [
-                                                "Arial",
-                                                "Calibri",
-                                                "Comic Sans",
-                                                "Courier",
-                                                "Garamond",
-                                                "Georgia",
-                                                "Impact",
-                                                "Lucida Console",
-                                                "Palatino Linotype",
-                                                "Segoe UI",
-                                                "Tahoma",
-                                                "Times New Roman",
-                                                "Trebuchet MS"
-                                            ]
+                                    <Editor
+                                        editorState={editorState}
+                                        onEditorStateChange={this.onEditorStateChange}
+                                        toolbar={{
+                                            inline: {inDropdown: true},
+                                            list: {inDropdown: true},
+                                            textAlign: {inDropdown: true},
+                                            link: {inDropdown: true},
+                                            history: {inDropdown: true},
+                                            image: {
+                                                uploadCallback: uploadImageCallBack,
+                                                previewImage: true,
+                                                alt: {present: true, mandatory: true}
+                                            },
                                         }}
-                                        onChange={this.handleChange}
-                                        onScroll={this.onScroll}
-                                        hide={true}
+                                        wrapperClassName="primary-editor-wrapper"
+                                        editorClassName="primary-editor"
                                     />
                                     <button className="btn btn-primary" onClick={this.save}>Kaydet</button>
                                 </div>
@@ -461,47 +440,49 @@ class TaskDetail extends Component {
                                                     ipsum dolor sit amet.</p>
                                             </div>
                                             <div className="attached-files">
-                                                <SRLWrapper>
-                                                    <div className="row content" id="content-page-one">
-                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
-                                                            <Link
-                                                                href="https://bootdey.com/img/Content/avatar/avatar1.png">
-                                                                <a>
-                                                                    <img
-                                                                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                <SimpleReactLightbox>
+                                                    <SRLWrapper>
+                                                        <div className="row content" id="content-page-one">
+                                                            <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                                <Link
+                                                                    href="https://bootdey.com/img/Content/avatar/avatar1.png">
+                                                                    <a>
+                                                                        <img
+                                                                            src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                                            className="img-fluid"
+                                                                            alt="attached-img"/>
+
+                                                                    </a>
+                                                                </Link>
+                                                                <div className="attached-file-info">ek-1</div>
+                                                            </div>
+
+                                                            <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                                <Link
+                                                                    href="https://bootdey.com/img/Content/avatar/avatar2.png">
+                                                                    <a><img
+                                                                        src="https://bootdey.com/img/Content/avatar/avatar2.png"
                                                                         className="img-fluid"
-                                                                        alt="attached-img"/>
+                                                                        alt="attached-img"/></a>
+                                                                </Link>
+                                                                <div className="attached-file-info">ek-2</div>
+                                                            </div>
 
-                                                                </a>
-                                                            </Link>
-                                                            <div className="attached-file-info">ek-1</div>
+                                                            <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                                <Link
+                                                                    href="https://bootdey.com/img/Content/avatar/avatar3.png">
+                                                                    <a><img
+                                                                        src="https://bootdey.com/img/Content/avatar/avatar3.png"
+                                                                        className="img-fluid"
+                                                                        alt="attached-img"/></a>
+                                                                </Link>
+                                                                <div className="attached-file-info">ek-2</div>
+                                                            </div>
+
+
                                                         </div>
-
-                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
-                                                            <Link
-                                                                href="https://bootdey.com/img/Content/avatar/avatar2.png">
-                                                                <a><img
-                                                                    src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                                                    className="img-fluid"
-                                                                    alt="attached-img"/></a>
-                                                            </Link>
-                                                            <div className="attached-file-info">ek-2</div>
-                                                        </div>
-
-                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
-                                                            <Link
-                                                                href="https://bootdey.com/img/Content/avatar/avatar3.png">
-                                                                <a><img
-                                                                    src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                                                    className="img-fluid"
-                                                                    alt="attached-img"/></a>
-                                                            </Link>
-                                                            <div className="attached-file-info">ek-2</div>
-                                                        </div>
-
-
-                                                    </div>
-                                                </SRLWrapper>
+                                                    </SRLWrapper>
+                                                </SimpleReactLightbox>
                                             </div>
                                         </div>
                                     </div>
@@ -538,7 +519,6 @@ class TaskDetail extends Component {
 
                                         </div>
                                     </div>
-
                                     <div className="body">
 
                                         <div className="comment-content">
@@ -553,47 +533,49 @@ class TaskDetail extends Component {
                                                     ipsum dolor sit amet.</p>
                                             </div>
                                             <div className="attached-files">
-                                                <SRLWrapper>
-                                                    <div className="row content" id="content-page-one">
-                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
-                                                            <Link
-                                                                href="https://bootdey.com/img/Content/avatar/avatar1.png">
-                                                                <a>
-                                                                    <img
-                                                                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                <SimpleReactLightbox>
+                                                    <SRLWrapper>
+                                                        <div className="row content" id="content-page-one">
+                                                            <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                                <Link
+                                                                    href="https://bootdey.com/img/Content/avatar/avatar1.png">
+                                                                    <a>
+                                                                        <img
+                                                                            src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                                            className="img-fluid"
+                                                                            alt="attached-img"/>
+
+                                                                    </a>
+                                                                </Link>
+                                                                <div className="attached-file-info">ek-1</div>
+                                                            </div>
+
+                                                            <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                                <Link
+                                                                    href="https://bootdey.com/img/Content/avatar/avatar2.png">
+                                                                    <a><img
+                                                                        src="https://bootdey.com/img/Content/avatar/avatar2.png"
                                                                         className="img-fluid"
-                                                                        alt="attached-img"/>
+                                                                        alt="attached-img"/></a>
+                                                                </Link>
+                                                                <div className="attached-file-info">ek-2</div>
+                                                            </div>
 
-                                                                </a>
-                                                            </Link>
-                                                            <div className="attached-file-info">ek-1</div>
+                                                            <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                                <Link
+                                                                    href="https://bootdey.com/img/Content/avatar/avatar3.png">
+                                                                    <a><img
+                                                                        src="https://bootdey.com/img/Content/avatar/avatar3.png"
+                                                                        className="img-fluid"
+                                                                        alt="attached-img"/></a>
+                                                                </Link>
+                                                                <div className="attached-file-info">ek-2</div>
+                                                            </div>
+
+
                                                         </div>
-
-                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
-                                                            <Link
-                                                                href="https://bootdey.com/img/Content/avatar/avatar2.png">
-                                                                <a><img
-                                                                    src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                                                    className="img-fluid"
-                                                                    alt="attached-img"/></a>
-                                                            </Link>
-                                                            <div className="attached-file-info">ek-2</div>
-                                                        </div>
-
-                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
-                                                            <Link
-                                                                href="https://bootdey.com/img/Content/avatar/avatar3.png">
-                                                                <a><img
-                                                                    src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                                                    className="img-fluid"
-                                                                    alt="attached-img"/></a>
-                                                            </Link>
-                                                            <div className="attached-file-info">ek-2</div>
-                                                        </div>
-
-
-                                                    </div>
-                                                </SRLWrapper>
+                                                    </SRLWrapper>
+                                                </SimpleReactLightbox>
                                             </div>
                                         </div>
                                     </div>
@@ -630,7 +612,6 @@ class TaskDetail extends Component {
 
                                         </div>
                                     </div>
-
                                     <div className="body">
 
                                         <div className="comment-content">
@@ -645,47 +626,36 @@ class TaskDetail extends Component {
                                                     ipsum dolor sit amet.</p>
                                             </div>
                                             <div className="attached-files">
-                                                <SRLWrapper>
-                                                    <div className="row content" id="content-page-one">
-                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
-                                                            <Link
-                                                                href="https://bootdey.com/img/Content/avatar/avatar1.png">
-                                                                <a>
-                                                                    <img
-                                                                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                <SimpleReactLightbox>
+                                                    <SRLWrapper>
+                                                        <div className="row content" id="content-page-one">
+                                                            <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                                <Link
+                                                                    href="https://bootdey.com/img/Content/avatar/avatar1.png">
+                                                                    <a>
+                                                                        <img
+                                                                            src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                                            className="img-fluid"
+                                                                            alt="attached-img"/>
+
+                                                                    </a>
+                                                                </Link>
+                                                                <div className="attached-file-info">ek-1</div>
+                                                            </div>
+
+                                                            <div className="attached-file col-lg-2 col-md-3 col-6">
+                                                                <Link
+                                                                    href="https://bootdey.com/img/Content/avatar/avatar2.png">
+                                                                    <a><img
+                                                                        src="https://bootdey.com/img/Content/avatar/avatar2.png"
                                                                         className="img-fluid"
-                                                                        alt="attached-img"/>
-
-                                                                </a>
-                                                            </Link>
-                                                            <div className="attached-file-info">ek-1</div>
+                                                                        alt="attached-img"/></a>
+                                                                </Link>
+                                                                <div className="attached-file-info">ek-2</div>
+                                                            </div>
                                                         </div>
-
-                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
-                                                            <Link
-                                                                href="https://bootdey.com/img/Content/avatar/avatar2.png">
-                                                                <a><img
-                                                                    src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                                                                    className="img-fluid"
-                                                                    alt="attached-img"/></a>
-                                                            </Link>
-                                                            <div className="attached-file-info">ek-2</div>
-                                                        </div>
-
-                                                        <div className="attached-file col-lg-2 col-md-3 col-6">
-                                                            <Link
-                                                                href="https://bootdey.com/img/Content/avatar/avatar3.png">
-                                                                <a><img
-                                                                    src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                                                                    className="img-fluid"
-                                                                    alt="attached-img"/></a>
-                                                            </Link>
-                                                            <div className="attached-file-info">ek-2</div>
-                                                        </div>
-
-
-                                                    </div>
-                                                </SRLWrapper>
+                                                    </SRLWrapper>
+                                                </SimpleReactLightbox>
                                             </div>
                                         </div>
                                     </div>
@@ -724,13 +694,15 @@ class TaskDetail extends Component {
                                     </div>
                                     <div className="body">
                                         <div className="comment-content">
-                                            <SRLWrapper>
-                                                <div className="row content">
-                                                    {
-                                                        // ReactHtmlParser(html, options)
-                                                    }
-                                                </div>
-                                            </SRLWrapper>
+                                            <SimpleReactLightbox>
+                                                <SRLWrapper>
+                                                    <div className="row content">
+                                                        {
+                                                            ReactHtmlParser(this.state.html, options)
+                                                        }
+                                                    </div>
+                                                </SRLWrapper>
+                                            </SimpleReactLightbox>
                                         </div>
                                     </div>
                                 </div>

@@ -105,11 +105,6 @@
   }
 
   .comment-editor-wrapper {
-    padding: 20px 0;
-    @include responsive(min-md) {
-      padding: 20px;
-    }
-
     .btn {
       margin-top: 10px;
     }

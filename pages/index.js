@@ -11,19 +11,6 @@ const Editor = dynamic(
 );
 import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
-/*const htmlToDraft = dynamic(
-    () => {
-        return import("html-to-draftjs").then(mod => mod.htmlToDraft);
-    },
-    {ssr: false}
-);*/
-/*  const draftToHtml = dynamic(
-          () => {
-              return import("draftjs-to-html");
-          },
-          {ssr: false}
-      );*/
-
 import * as draftToHtml from 'draftjs-to-html';
 
 //editorde img göstermek için
@@ -37,28 +24,6 @@ function uploadImageCallBack(file) {
         });
 }
 
-//form işlemi yapar (request)
-/*function uploadImageCallBack(file) {
-    return new Promise(
-        (resolve, reject) => {
-            console.log("fileData",file);
-        /!*    const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'https://api.imgur.com/3/image');
-            xhr.setRequestHeader('Authorization', 'Client-ID XXXXX');
-            const data = new FormData();
-            data.append('image', file);
-            xhr.send(data);
-            xhr.addEventListener('load', () => {
-                const response = JSON.parse(xhr.responseText);
-                resolve(response);
-            });
-            xhr.addEventListener('error', () => {
-                const error = JSON.parse(xhr.responseText);
-                reject(error);
-            });*!/
-        }
-    );
-}*/
 
 export default class EditorConvertToHTML extends Component {
     state = {

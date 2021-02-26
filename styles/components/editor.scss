@@ -1,0 +1,41 @@
+.editor-root-wrapper {
+  // padding: 10px;
+
+  .btn {
+    margin-top: 10px;
+
+    + .btn {
+      margin-left: 10px;
+    }
+  }
+}
+
+.editor-root-area {
+  padding: 15px 0;
+}
+
+.editor-root-input {
+  width: 100%;
+}
+
+
+//***********
+.primary-editor-wrapper {
+  background-color: #ffffff;
+
+  .primary-editor {
+    padding: 10px 20px 0;
+
+    figure {
+      margin: 0;
+    }
+
+    img {
+      width: 250px !important;
+      height: auto !important;
+    }
+  }
+
+  .primary-toolbar {
+  }
+}

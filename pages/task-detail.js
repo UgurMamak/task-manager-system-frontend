@@ -29,7 +29,9 @@ function uploadImageCallBack(file) {
             const reader = new FileReader(); // eslint-disable-line no-undef
             reader.onload = e => resolve({data: {link: e.target.result}});
             reader.onerror = e => reject(e);
-            reader.readAsDataURL(file);
+            console.log(reader.readAsDataURL(file));
+            console.log("file",file);
+          /*console.log( reader.readAsDataURL(file));*/
         });
 }
 
@@ -540,7 +542,7 @@ class TaskDetail extends Component {
                                         <div className="body">
                                             <Editor
                                                 toolbarHidden={true}
-                                                readOnly
+                                                readOnly={false}
                                                 editorState={this.state.editorState2}
                                                 onEditorStateChange={this.onEditorStateChange}
                                                 toolbar={{

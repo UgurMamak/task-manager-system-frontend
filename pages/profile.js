@@ -16,10 +16,17 @@ class Profile extends Component {
         photoModalStatus: false,
         src: null,
         crop: {
-            unit: '%',
-            width: 30,
+            unit: 'px',
+            width: 300,
             aspect: 16 / 9,
+            minWidth:300,
+            minHeight:300,
+            locked:true,
+            disabled:true
         },
+        imgInfo: [],
+        file: "",
+        croppedImageUrl: ""
     }
 
     handleImgSubmit = () => {
@@ -31,35 +38,27 @@ class Profile extends Component {
             var reader = new FileReader();
             var url = reader.readAsDataURL(file);
             reader.onloadend = function (e) {
-                /*  this.setState({
-                      user: {img: reader.result}
-                  })*/
-                this.setState({src: reader.result})
+                // this.setState({src: reader.result})
+                this.setState({src: window.URL.createObjectURL(file), file: file});
             }.bind(this);
-
-            /*    this.setState({
-                    photoModalStatus:true
-                });*/
         } else {
             console.log("boş var");
         }
 
-
+        this.setState({photoModalStatus: true});
     }
 
+
+//******
     onImageLoaded = image => {
         this.imageRef = image;
     };
-
-    onCropComplete = crop => {
-        this.makeClientCrop(crop);
-    };
-
     onCropChange = (crop, percentCrop) => {
-        // You could also use percentCrop:
-        // this.setState({ crop: percentCrop });
         this.setState({crop});
     };
+
+//****
+
 
     async makeClientCrop(crop) {
         if (this.imageRef && crop.width && crop.height) {
@@ -72,6 +71,7 @@ class Profile extends Component {
         }
     }
 
+    //kırpm işlemi
     getCroppedImg(image, crop, fileName) {
         const canvas = document.createElement('canvas');
         const scaleX = image.naturalWidth / image.width;
@@ -79,6 +79,7 @@ class Profile extends Component {
         canvas.width = crop.width;
         canvas.height = crop.height;
         const ctx = canvas.getContext('2d');
+
 
         ctx.drawImage(
             image,
@@ -99,24 +100,32 @@ class Profile extends Component {
                     console.error('Canvas is empty');
                     return;
                 }
-                blob.name = fileName;
+                blob.name = this.state.file.name;
                 window.URL.revokeObjectURL(this.fileUrl);
                 this.fileUrl = window.URL.createObjectURL(blob);
+                this.state.imgInfo.push({
+                    fileName: this.state.file.name,
+                    value: blob
+                });
                 resolve(this.fileUrl);
             }, 'image/jpeg');
         });
     }
 
+    //modal close
     handleClose = () => {
         this.setState({photoModalStatus: false})
     };
 
-    handleShow = () => {
-        this.setState({photoModalStatus: true})
-    };
+    saveCrop = (crop) => {
+        this.makeClientCrop(this.state.crop);
+        this.setState({
+            photoModalStatus: false
+        });
+    }
 
     render() {
-        const {crop, croppedImageUrl, src} = this.state;
+        const {crop, croppedImageUrl, src, croppedImg} = this.state;
         return (
             <Layout>
                 <div className="container">
@@ -125,24 +134,22 @@ class Profile extends Component {
                             <form action="" onSubmit={this.handleImgSubmit}>
                                 <div className="photo-upload-widget-wrapper">
                                     <label>
-                                        <input className="file-upload-input required" type="file" id="profile-photo"
+                                        <input className="file-upload-input required d-none" type="file" id="profile-photo"
                                                name="primaryPhoto"
                                                accept=".png, .jpg, .jpeg"
                                                onChange={this.handleImgChange}
                                                data-msg-required="Bu alan boş bırakılamaz."/>
-                                        <div className="photo-upload-widget">
-                                            <figure className="avatar">
-                                                <img className="img-fluid" src={this.state.user.img} alt=""/>
-                                            </figure>
+                                        <div className="photo-upload-widget" data-toggle="img-content">
+                                            {croppedImageUrl === "" ?
+                                                <div data-toggle="cropedImg" className="img" style={{backgroundImage: `url(${this.state.user.img})`}}></div>
+                                                : <div data-toggle="cropedImg" className="img" style={{backgroundImage: `url(${croppedImageUrl})`}}></div>
+                                            }
                                             <div className="upload-content" data-toggle="triggerUpload">
-                                                <div className="d-flex d-lg-none flex-grow-1">
-                                                    <div className="icon-item">
-                                                        <i className="icon icon-add-picture"></i>
-                                                        <span className="text">Fotoğraf Yükle</span>
-                                                    </div>
-                                                </div>
+                                                <i className="icon icon-add-picture"></i>
+                                                <span className="text">Fotoğraf Yükle</span>
                                             </div>
                                         </div>
+
                                     </label>
                                 </div>
                                 <button type="submit" className="btn btn-primary">Kaydet</button>
@@ -154,37 +161,28 @@ class Profile extends Component {
                     </div>
                 </div>
 
-                <Button variant="primary" onClick={this.handleShow}>
-                    Launch demo modal
-                </Button>
-
-                {src && (
-                    <ReactCrop
-                        src={src}
-                        crop={crop}
-                        ruleOfThirds
-                        onImageLoaded={this.onImageLoaded}
-                        onComplete={this.onCropComplete}
-                        onChange={this.onCropChange}
-                    />
-                )}
-                {croppedImageUrl && (
-                    <img alt="Crop" style={{maxWidth: '100%'}} src={croppedImageUrl}/>
-                )}
-
-                <Modal className="photo-modal" show={this.state.photoModalStatus} onHide={this.handleClose}>
+                <Modal className="photo-modal" data-toggle="photo-modal" show={this.state.photoModalStatus}
+                       onHide={this.handleClose} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Modal heading</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-
+                        {src && (
+                            <ReactCrop
+                                src={src}
+                                crop={crop}
+                                ruleOfThirds
+                                onImageLoaded={this.onImageLoaded}
+                                onChange={this.onCropChange}
+                            />
+                        )}
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={this.handleClose}>
-                            Close
+                            İptal
                         </Button>
-                        <Button variant="primary" onClick={this.handleClose}>
-                            Save Changes
+                        <Button variant="primary" onClick={this.saveCrop}>
+                            Kaydet
                         </Button>
                     </Modal.Footer>
                 </Modal>

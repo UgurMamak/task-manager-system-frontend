@@ -1,0 +1,72 @@
+.photo-modal {
+  .modal-dialog {
+    @include responsive(min-md) {
+      max-width: 600px;
+    }
+  }
+}
+
+
+.photo-upload-widget {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: ease all .3s;
+
+
+  &:hover {
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 9;
+      border-radius: 50%
+    }
+
+    .upload-content {
+      display: block;
+    }
+  }
+
+  .img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+  }
+
+  .upload-content {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    transition: ease all .3s;
+    color: #ffffff;
+    font-size: 14px;
+    width: 100%;
+    text-align: center;
+
+    .icon {
+      font-size: 16px;
+      padding-right: 5px;
+    }
+  }
+
+}
+
+.photo-upload-widget-wrapper {
+  position: relative;
+}

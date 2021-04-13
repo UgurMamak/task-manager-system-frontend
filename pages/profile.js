@@ -1,11 +1,7 @@
 import React, {Component} from 'react';
 import Layout from "../components/layout/layout";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import ReactCrop from 'react-image-crop';
-import 'react-image-crop/dist/ReactCrop.css';
-
 import PhotoModal from "../components/photo-modal";
+import {Form,Button} from "react-bootstrap";
 
 class Profile extends Component {
     state = {
@@ -15,30 +11,55 @@ class Profile extends Component {
             lastName: "mamak",
             img: "https://bootdey.com/img/Content/avatar/avatar7.png"
         },
+        imgUrl:""
     }
 
-    //child component'ten gelen data
-    imgSave=(data)=>{
-        console.log("kaydeldi");
+    changeImg=(data)=>{
+        this.setState({imgUrl:data});
+    }
+
+    handleImgSubmit=(e,data)=>{
+        e.preventDefault();
         console.log(data);
     }
 
-    handleImgSubmit=(e)=>{
+    saveInfo=(e)=>{
         e.preventDefault();
+        console.log("deneme");
     }
 
     render() {
+
+        const {imgUrl}=this.state;
+
         return (
             <Layout>
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-3 col-24">
-                            <form action="" onSubmit={this.handleImgSubmit}>
-                            <PhotoModal imgSave={this.imgSave} />
-                            </form>
+                            <PhotoModal imgUrl={imgUrl===""?this.state.user.img:imgUrl} changeImg={this.changeImg} handleImgSubmit={this.handleImgSubmit} />
                         </div>
                         <div className="col-lg-9 col-24">
-                            info
+                            <Form onSubmit={this.saveInfo}>
+                                <Form.Group controlId="formBasicEmail">
+                                    <Form.Label>Email address</Form.Label>
+                                    <Form.Control type="email" placeholder="Enter email" />
+                                    <Form.Text className="text-muted">
+                                        We'll never share your email with anyone else.
+                                    </Form.Text>
+                                </Form.Group>
+
+                                <Form.Group controlId="formBasicPassword">
+                                    <Form.Label>Password</Form.Label>
+                                    <Form.Control type="password" placeholder="Password" />
+                                </Form.Group>
+                                <Form.Group controlId="formBasicCheckbox">
+                                    <Form.Check type="checkbox" label="Check me out" />
+                                </Form.Group>
+                                <Button variant="primary" type="submit">
+                                    Kaydet
+                                </Button>
+                            </Form>
                         </div>
                     </div>
                 </div>

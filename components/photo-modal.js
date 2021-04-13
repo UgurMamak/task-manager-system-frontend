@@ -7,12 +7,6 @@ import 'react-image-crop/dist/ReactCrop.css';
 class PhotoModal extends Component {
 
     state = {
-        user: {
-            email: "ugurmamak98@gmail.com",
-            firstName: "uğur",
-            lastName: "mamak",
-            img: "https://bootdey.com/img/Content/avatar/avatar7.png"
-        },
         photoModalStatus: false,
         src: null,
         crop: {
@@ -26,9 +20,8 @@ class PhotoModal extends Component {
         },
         imgInfo: [],
         file: "",
-        croppedImageUrl: "" //kırpılmış img'i göstermek için
-    }
 
+    }
 
     handleImgChange = (event) => {
 
@@ -62,6 +55,7 @@ class PhotoModal extends Component {
     onImageLoaded = image => {
         this.imageRef = image;
     };
+
     onCropChange = (crop, percentCrop) => {
         this.setState({crop});
     };
@@ -70,15 +64,14 @@ class PhotoModal extends Component {
         if (this.imageRef && crop.width && crop.height) {
             const croppedImageUrl = await this.getCroppedImg(
                 this.imageRef,
-                crop,
-                'newFile.jpeg'
+                crop
             );
-            this.setState({croppedImageUrl});
+            this.props.changeImg(croppedImageUrl);
         }
     }
 
     //kırpm işlemi
-    getCroppedImg(image, crop, fileName) {
+    getCroppedImg(image, crop) {
         const canvas = document.createElement('canvas');
         const scaleX = image.naturalWidth / image.width;
         const scaleY = image.naturalHeight / image.height;
@@ -109,9 +102,15 @@ class PhotoModal extends Component {
                 blob.name = this.state.file.name;
                 window.URL.revokeObjectURL(this.fileUrl);
                 this.fileUrl = window.URL.createObjectURL(blob);
-                this.state.imgInfo.push({
+                /*this.state.imgInfo.push({
                     fileName: this.state.file.name,
                     value: blob
+                });*/
+                this.setState({
+                    imgInfo:{
+                        fileName:this.state.file.name,
+                        value:blob
+                    }
                 });
                 resolve(this.fileUrl);
             }, 'image/jpeg');
@@ -119,7 +118,7 @@ class PhotoModal extends Component {
     }
 
     //modal close
-    handleClose = () => {
+    modalClose = () => {
         this.setState({photoModalStatus: false})
     };
 
@@ -131,10 +130,13 @@ class PhotoModal extends Component {
     }
 
     render() {
-        const {crop,src, croppedImageUrl,  croppedImg, photoModalStatus} = this.state;
+        const {crop,src,photoModalStatus} = this.state;
+
+        const{imgUrl}=this.props;
 
         return (
             <>
+                <form action="" onSubmit={(e)=> {this.props.handleImgSubmit(e,this.state.imgInfo)}}>
                     <div className="photo-upload-widget-wrapper">
                         <label>
                             <input className="file-upload-input required d-none" type="file" id="profile-photo"
@@ -143,12 +145,8 @@ class PhotoModal extends Component {
                                    onChange={this.handleImgChange}
                                    data-msg-required="Bu alan boş bırakılamaz."/>
                             <div className="photo-upload-widget" data-toggle="img-content">
-                                {croppedImageUrl === "" ?
-                                    <div data-toggle="cropedImg" className="img"
-                                         style={{backgroundImage: `url(${this.state.user.img})`}}></div>
-                                    : <div data-toggle="cropedImg" className="img"
-                                           style={{backgroundImage: `url(${croppedImageUrl})`}}></div>
-                                }
+                                <div data-toggle="cropedImg" className="img"
+                                     style={{backgroundImage: `url(${imgUrl})`}}></div>
                                 <div className="upload-content" data-toggle="triggerUpload">
                                     <i className="icon icon-add-picture"></i>
                                     <span className="text">Fotoğraf Yükle</span>
@@ -156,9 +154,10 @@ class PhotoModal extends Component {
                             </div>
                         </label>
                     </div>
-                    <button type="submit" onClick={()=>{this.props.imgSave(this.state.imgInfo)}} className="btn btn-primary">Kaydet</button>
+                    <button type="submit" className="btn btn-primary">Kaydet</button>
+                </form>
 
-                <Modal className="photo-modal" data-toggle="photo-modal" show={photoModalStatus} onHide={this.handleClose} centered>
+                <Modal className="photo-modal" data-toggle="photo-modal" show={photoModalStatus} onHide={this.modalClose} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Modal heading</Modal.Title>
                     </Modal.Header>
@@ -174,7 +173,7 @@ class PhotoModal extends Component {
                         )}
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={this.handleClose}>
+                        <Button variant="secondary" onClick={this.modalClose}>
                             İptal
                         </Button>
                         <Button variant="primary" onClick={this.saveCrop}>
